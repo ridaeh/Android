@@ -340,8 +340,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             } else {
-                mEmailView.setError(getString(R.string.error_invalid_email));
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mEmailView.setError("error invalid email or password");
                 mEmailView.requestFocus();
             }
         }
