@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "328924357252",
+    "firebase_url": "https://gala-enib.firebaseio.com",
+    "project_id": "gala-enib",
+    "storage_bucket": "gala-enib.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:328924357252:android:7b8a167c24a21cce",
+        "android_client_info": {
+          "package_name": "enib.gala"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "328924357252-5eus500me7mv4fc5tduublv9egivalo9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXE09QRiYpFxG0Y21ghSMzBFg52j5-1M0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
