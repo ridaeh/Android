@@ -53,11 +53,6 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{"admin@gala.enib.net:admin"};
     private static final String TAG = "Login";
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -331,7 +326,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
         private final String mEmail;
         private final String mPassword;
-        private boolean error;
+        private boolean noError;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
@@ -340,7 +335,8 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            error=false;
+            showProgress(true);
+            noError=true;
             mAuth.signInWithEmailAndPassword(mEmail, mPassword)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -349,29 +345,32 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "signInWithEmail:success");
                                 FirebaseUser user = mAuth.getCurrentUser();
+                                Intent intent = new Intent(getApplicationContext(), Main.class);
+                                startActivity(intent);
+                                finish();
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "signInWithEmail:failure", task.getException());
                                 Toast.makeText(getApplicationContext(), "Authentication failed.",
                                         Toast.LENGTH_SHORT).show();
-                                error=true;
+                                noError=false;
                             }
 
                             // ...
                         }
                     });
-            return !error;
+            return noError;
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            showProgress(false);
+//            showProgress(false);
 
             if (success) {
-                //finish();
-                Intent intent = new Intent(getApplicationContext(), Main.class);
-                startActivity(intent);
+                Toast.makeText(getApplicationContext(), "Connection success",
+                        Toast.LENGTH_SHORT).show();
+
             } else {
                 mEmailView.setError("error invalid email or password");
                 mEmailView.requestFocus();
