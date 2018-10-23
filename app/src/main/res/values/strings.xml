@@ -96,4 +96,11 @@
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="nav_place_name">Place</string>
     <string name="action_disconnect">Disconnect</string>
+    <string name="name_switch_accept_condition">Accept Condition</string>
+    <string name="nav_history_name">History</string>
+    <string name="nav_reload_name">Reload</string>
+    <string name="nav_menu_communicate_name">Communicate</string>
+    <string name="nav_share_name">Share</string>
+    <string name="nav_send_feedback_name">Send feedback</string>
+    <string name="action_admin_name" >Admin</string>
 </resources>

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,11 +59,18 @@ public class CreateAccount extends AppCompatActivity {
         password.setError(null);
         String email_ =email.getText().toString();
         String password_ =password.getText().toString();
-//        Log.d(TAG, "createUserWithEmail:email_:"+email_);
-//        Log.d(TAG, "createUserWithEmail:password_:"+password_);
+        Switch conditionAccept = (Switch) findViewById(R.id.switch_accept_condition);
+
+        if (!conditionAccept.isChecked())
+        {
+            Toast.makeText(getApplicationContext(), "Please accept condition.",
+                    Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "createUserWithEmail:conditionNotAccepted");
+            return;
+        }
+
         if (!paramsValid(email_,password_))
         {
-            statut.setText("invalidParams");
             Log.d(TAG, "createUserWithEmail:invalidParams");
             return;
         }

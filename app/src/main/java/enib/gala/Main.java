@@ -108,15 +108,13 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
 
         if (id == R.id.nav_place) {
 
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_history) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_reload) {
 
         } else if (id == R.id.nav_share) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_send_feedback) {
 
         }
 

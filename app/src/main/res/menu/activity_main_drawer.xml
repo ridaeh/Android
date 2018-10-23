@@ -9,29 +9,27 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/nav_place_name" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:id="@+id/nav_history"
+            android:icon="@drawable/ic_info_black_24dp"
+            android:title="@string/nav_history_name" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:id="@+id/nav_reload"
+            android:icon="@drawable/ic_sync_black_24dp"
+            android:title="@string/nav_reload_name" />
     </group>
 
-    <item android:title="Communicate">
+    <item
+        android:id="@+id/nav_menu_communicate"
+        android:title="@string/nav_menu_communicate_name">
         <menu>
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:title="@string/nav_share_name" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_send_feedback"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="@string/nav_send_feedback_name" />
         </menu>
     </item>
 
