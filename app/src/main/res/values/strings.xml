@@ -102,5 +102,5 @@
     <string name="nav_menu_communicate_name">Communicate</string>
     <string name="nav_share_name">Share</string>
     <string name="nav_send_feedback_name">Send feedback</string>
-    <string name="action_admin_name" >Admin</string>
+    <string name="action_admin_name">Admin</string>
 </resources>

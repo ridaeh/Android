@@ -96,6 +96,12 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
             finish();
             return true;
         }
+        else if (id == R.id.action_admin)
+        {
+            Intent intent = new Intent(getApplicationContext(), Admin_selection.class);
+            startActivity(intent);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
