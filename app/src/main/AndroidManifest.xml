@@ -43,7 +43,11 @@
             android:name=".Settings"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme" />
-        <activity android:name=".Admin_selection"></activity>
+        <activity android:name=".Admin_selection" />
+        <activity
+            android:name=".Admin_BarMode"
+            android:label="@string/title_activity_admin__bar_mode"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

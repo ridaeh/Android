@@ -29,18 +29,21 @@
             android:id="@+id/button_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="goToBarMode"
             android:text="@string/select_bar" />
 
         <Button
             android:id="@+id/button_entrance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="goToEntranceMode"
             android:text="@string/select_entrance" />
 
         <Button
             android:id="@+id/button_recharge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="goToRechargeMode"
             android:text="@string/select_recharge" />
     </LinearLayout>
 

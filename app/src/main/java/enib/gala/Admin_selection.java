@@ -1,5 +1,6 @@
 package enib.gala;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -31,16 +32,18 @@ public class Admin_selection extends AppCompatActivity {
 
     public void goToBarMode(View view)
     {
-
+        Intent intent = new Intent(getApplicationContext(), Admin_BarMode.class);
+        startActivity(intent);
+        return;
     }
 
     public void goToEntranceMode(View view)
     {
-
+        return;
     }
 
     public void goToRechargeMode(View view)
     {
-
+        return;
     }
 }

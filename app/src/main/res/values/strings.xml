@@ -107,4 +107,5 @@
     <string name="select_entrance">Entrance</string>
     <string name="select_recharge">Recharge</string>
     <string name="select_adminmode">Please Select witch mode you want to use</string>
+    <string name="title_activity_admin__bar_mode">Admin_BarMode</string>
 </resources>
