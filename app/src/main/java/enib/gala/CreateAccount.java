@@ -22,7 +22,7 @@ public class CreateAccount extends AppCompatActivity {
     private FirebaseUser currentUser;
     private EditText email;
     private EditText password;
-    private TextView statut;
+    private TextView status;
 
     private static final String TAG = "createAccount";
 
@@ -35,7 +35,7 @@ public class CreateAccount extends AppCompatActivity {
 
         email =  findViewById(R.id.editTextEmail);
         password =  findViewById(R.id.editTextPassword);
-        statut = findViewById(R.id.textViewStatut);
+        status = findViewById(R.id.textViewStatut);
         email.requestFocus();
         Log.d(TAG, "onCreate");
 
@@ -54,7 +54,7 @@ public class CreateAccount extends AppCompatActivity {
 
     public void register(View view)
     {
-        statut.setText("");
+        status.setText("");
         email.setError(null);
         password.setError(null);
         String email_ =email.getText().toString();
@@ -81,7 +81,7 @@ public class CreateAccount extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
-                            statut.setText("success");
+                            status.setText("success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             finish();
 //                            updateUI(user);
@@ -90,7 +90,7 @@ public class CreateAccount extends AppCompatActivity {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getApplicationContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            statut.setText("failure");
+                            status.setText("failure");
 //                            updateUI(null);
                         }
 
