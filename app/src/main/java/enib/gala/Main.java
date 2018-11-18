@@ -21,8 +21,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -65,14 +63,33 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
 
         db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("users").document(mAuth.getUid());
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//                    if (document.exists()) {
+//                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+//                        mInfo.setText(document.getData().toString());
+//                    } else {
+//                        Log.d(TAG, "No such document");
+//                        mInfo.setText("No such document");
+//                    }
+//                } else {
+//                    Log.d(TAG, "get failed with ", task.getException());
+//                    mInfo.setText(task.getException().toString());
+//                }
+//            }
+//        });
+        DocumentReference docRef1 = db.collection("users").document(mAuth.getUid()).collection("ticket").document("hg");
+        docRef1.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                        mInfo.setText(document.getData().toString());
+                        mInfo.setText(document.getData().get("ticket_id").toString());
                     } else {
                         Log.d(TAG, "No such document");
                         mInfo.setText("No such document");
@@ -152,6 +169,8 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         int id = item.getItemId();
 
         if (id == R.id.nav_place) {
+            Intent intent = new Intent(getApplicationContext(), ShowTicket.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_history) {
 

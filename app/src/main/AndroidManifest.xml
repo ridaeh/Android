@@ -47,6 +47,10 @@
         <activity
             android:name=".Admin_BarMode"
             android:label="@string/title_activity_admin__bar_mode"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ShowTicket"
+            android:label="@string/title_activity_show_ticket"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
