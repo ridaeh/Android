@@ -1,8 +1,11 @@
 package enib.gala;
 
-import android.content.res.Resources;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,12 +20,16 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
+import com.r0adkll.slidr.Slidr;
+
 public class ShowTicket extends AppCompatActivity {
 
     ImageView QRCodeView;
+    private View mProgressView;
+    private View mTicketView;
 
     Thread thread ;
-    public int QRcodeWidth =700 ;
+    public int QRcodeWidth ;
     Bitmap bitmap ;
 
     @Override
@@ -31,17 +38,19 @@ public class ShowTicket extends AppCompatActivity {
         setContentView(R.layout.activity_show_ticket);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Slidr.attach(this);
 //        toolbar
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
+        int height = size.y;
 
-//        QRcodeWidth = width;
+        QRcodeWidth = width;
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,9 +58,14 @@ public class ShowTicket extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        mProgressView = findViewById(R.id.loading_progress);
+        mTicketView = findViewById(R.id.app_bar);
 
-        QRCodeView = findViewById(R.id.imageView);
-
+        mTicketView.setMinimumHeight(height);
+        QRCodeView = findViewById(R.id.QRCode_image_view);
+        showProgress(true);
+        CreateQRCode("2qwe6r7t8973gfue45ygfo4e");
+        showProgress(false);
 
     }
 
@@ -59,20 +73,51 @@ public class ShowTicket extends AppCompatActivity {
     protected void onResume()
     {
         super.onResume();
-        ShowQRCode();
     }
 
-    void ShowQRCode()
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            QRCodeView.setVisibility(show ? View.GONE : View.VISIBLE);
+            QRCodeView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    QRCodeView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            QRCodeView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    void CreateQRCode(final String text)
     {
         try {
-            bitmap = TextToImageEncode("2qwe6r7t8973gf8w3y4ubg03485tfvgwbouryvuwitbw45ofue45ygfo4e");
-
+            bitmap = TextToImageEncode(text);
             QRCodeView.setImageBitmap(bitmap);
-
         } catch (WriterException e) {
             e.printStackTrace();
         }
     }
+
 
 
     Bitmap TextToImageEncode(String Value) throws WriterException {
@@ -108,4 +153,8 @@ public class ShowTicket extends AppCompatActivity {
         bitmap.setPixels(pixels, 0, QRcodeWidth, 0, 0, bitMatrixWidth, bitMatrixHeight);
         return bitmap;
     }
+
+
+
+
 }
