@@ -154,7 +154,7 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         }
         else if (id == R.id.action_admin)
         {
-            Intent intent = new Intent(getApplicationContext(), Admin_selection.class);
+            Intent intent = new Intent(getApplicationContext(), Admin_Selection.class);
             startActivity(intent);
             return true;
         }

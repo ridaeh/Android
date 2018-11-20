@@ -8,7 +8,7 @@ import android.view.View;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class Admin_selection extends AppCompatActivity {
+public class Admin_Selection extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
 
@@ -39,6 +39,8 @@ public class Admin_selection extends AppCompatActivity {
 
     public void goToEntranceMode(View view)
     {
+        Intent intent = new Intent(getApplicationContext(), Admin_EntranceMode.class);
+        startActivity(intent);
         return;
     }
 
