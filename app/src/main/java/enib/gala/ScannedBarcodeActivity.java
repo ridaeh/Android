@@ -1,7 +1,9 @@
 package enib.gala;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +17,10 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+
+import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrConfig;
+import com.r0adkll.slidr.model.SlidrListener;
 
 import java.io.IOException;
 
@@ -34,6 +40,33 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanned_barcode);
+        SlidrConfig config = new SlidrConfig.Builder()
+                                .listener(new SlidrListener(){
+                                    @Override
+                                    public void onSlideStateChanged(int state) {
+
+                                    }
+
+                                    @Override
+                                    public void onSlideChange(float percent) {
+
+                                    }
+
+                                    @Override
+                                    public void onSlideOpened() {
+
+                                    }
+
+                                    @Override
+                                    public void onSlideClosed() {
+                                        Intent data = new Intent();
+                                        data.setData(Uri.parse(txtBarcodeValue.getText().toString()));
+                                        setResult(RESULT_OK, data);
+                                    }
+                                })
+                                .build();
+
+        Slidr.attach(this, config);
 
         initViews();
     }

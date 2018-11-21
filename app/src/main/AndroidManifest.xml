@@ -74,7 +74,7 @@
         <activity
             android:name=".ScannedBarcodeActivity"
             android:label="@string/title_activity_scanned_barcode"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.SlidrActivityTheme"></activity>
 
         <provider
         android:name="android.support.v4.content.FileProvider"

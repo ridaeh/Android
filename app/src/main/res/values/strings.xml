@@ -201,7 +201,9 @@
     <string name="qrcode">QRCode</string>
     <string name="title_activity_admin__entrance_mode">Entrance</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_scan_qrcode">Scan QRCode</string>
+    <string name="title_scan_bracelet">Scan Bracelet</string>
+
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_scanned_barcode">ScannedBarcodeActivity</string>
 </resources>

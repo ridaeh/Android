@@ -12,6 +12,7 @@ import android.widget.TextView;
 public class Admin_EntranceMode extends AppCompatActivity {
 
     private TextView mTextMessage;
+    int request_Code=12;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -22,14 +23,14 @@ public class Admin_EntranceMode extends AppCompatActivity {
                 case R.id.navigation_home:
                     mTextMessage.setText(R.string.title_home);
                     return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
+                case R.id.navigation_scan_qrcode:
+                    mTextMessage.setText(R.string.title_scan_qrcode);
                     Intent intent = new Intent(getApplicationContext(), ScannedBarcodeActivity.class);
-                    startActivity(intent);
+                    startActivityForResult(intent,request_Code);
 
                     return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
+                case R.id.navigation_scan_bracelet:
+                    mTextMessage.setText(R.string.title_scan_bracelet);
                     return true;
             }
             return false;
@@ -44,6 +45,15 @@ public class Admin_EntranceMode extends AppCompatActivity {
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == request_Code) {
+            if (resultCode == RESULT_OK) {
+                String returnedResult = data.getData().toString();
+                mTextMessage.setText(mTextMessage.getText().toString()+returnedResult);
+            }
+        }
     }
 
 }
