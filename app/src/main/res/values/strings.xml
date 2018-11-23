@@ -206,4 +206,7 @@
 
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_scanned_barcode">ScannedBarcodeActivity</string>
+    <string name="QRCode_code">Code</string>
+    <string name="nothing">void</string>
+    <string name="last_name">Last Name</string>
 </resources>

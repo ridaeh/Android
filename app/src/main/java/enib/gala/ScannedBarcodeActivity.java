@@ -59,9 +59,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
                                     @Override
                                     public void onSlideClosed() {
-                                        Intent data = new Intent();
-                                        data.setData(Uri.parse(txtBarcodeValue.getText().toString()));
-                                        setResult(RESULT_OK, data);
+                                        beforeEndActivity();
                                     }
                                 })
                                 .build();
@@ -71,6 +69,13 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
         initViews();
     }
 
+    private void beforeEndActivity()
+    {
+        Intent data = new Intent();
+        data.setData(Uri.parse(txtBarcodeValue.getText().toString()));
+        setResult(RESULT_OK, data);
+    }
+
     private void initViews() {
         txtBarcodeValue = findViewById(R.id.txtBarcodeValue);
         surfaceView = findViewById(R.id.surfaceView);
@@ -78,7 +83,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
     private void initialiseDetectorsAndSources() {
 
-        Toast.makeText(getApplicationContext(), "Barcode scanner started", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(), "Barcode scanner started", Toast.LENGTH_SHORT).show();
 
         barcodeDetector = new BarcodeDetector.Builder(this)
                 .setBarcodeFormats(Barcode.ALL_FORMATS)
@@ -121,7 +126,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
         barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
             @Override
             public void release() {
-                Toast.makeText(getApplicationContext(), "To prevent memory leaks barcode scanner has been stopped", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "To prevent memory leaks barcode scanner has been stopped", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -135,17 +140,21 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
                         @Override
                         public void run() {
 
-                                if (barcodes.valueAt(0).email != null) {
-                                    txtBarcodeValue.removeCallbacks(null);
-                                    intentData = barcodes.valueAt(0).email.address;
-                                    txtBarcodeValue.setText(intentData);
-                                    isEmail = true;
-                                } else {
-                                    isEmail = false;
-                                    intentData = barcodes.valueAt(0).displayValue;
-                                    txtBarcodeValue.setText(intentData);
+                            if (barcodes.valueAt(0).email != null) {
+                                txtBarcodeValue.removeCallbacks(null);
+                                intentData = barcodes.valueAt(0).email.address;
+                                txtBarcodeValue.setText(intentData);
+                                isEmail = true;
+                            } else {
+                                isEmail = false;
+                                intentData = barcodes.valueAt(0).displayValue;
 
-                                }
+
+                            }
+                            txtBarcodeValue.setText(intentData);
+                            Toast.makeText(getApplicationContext(),intentData, Toast.LENGTH_SHORT).show();
+                            beforeEndActivity();
+                            finish();
                         }
                     });
 
