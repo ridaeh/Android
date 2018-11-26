@@ -209,4 +209,5 @@
     <string name="QRCode_code">Code</string>
     <string name="nothing">void</string>
     <string name="last_name">Last Name</string>
+    <string name="first_name">First Name</string>
 </resources>

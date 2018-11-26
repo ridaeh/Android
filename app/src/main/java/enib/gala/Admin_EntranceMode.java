@@ -7,20 +7,25 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 
 public class Admin_EntranceMode extends AppCompatActivity {
 
-    private TextView mTextQRCodeShow;
+    private TextView mTextViewQRCodeShow;
+    private TextView mTextViewLastName;
+    private TextView mTextViewFistName;
+    private TextView mTextViewEmail;
+    private TextView mTextViewAccountValue;
+    private CardView mCardViewPlace;
+
     private ViewFlipper mView;
     private ConstraintLayout mLayoutScanQRCode;
-    int request_Code=12;
-//    QRCodeValue
+    //define a requestcode to know witch activity return smth
+    int request_Code=12; //qrcode scanner
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -32,10 +37,10 @@ public class Admin_EntranceMode extends AppCompatActivity {
                     mView.setDisplayedChild(0);
                     return true;
                 case R.id.navigation_scan_qrcode:
-                    mView.setDisplayedChild(1);
                     initScanQRCodeView();
                     Intent intent = new Intent(getApplicationContext(), ScannedBarcodeActivity.class);
                     startActivityForResult(intent,request_Code);
+                    mView.setDisplayedChild(1);
 
                     return true;
                 case R.id.navigation_scan_bracelet:
@@ -55,7 +60,6 @@ public class Admin_EntranceMode extends AppCompatActivity {
 
         initScanQRCodeView();
 
-
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
@@ -63,8 +67,14 @@ public class Admin_EntranceMode extends AppCompatActivity {
 
     private void initScanQRCodeView()
     {
-        mTextQRCodeShow=findViewById(R.id.QRCodeValue);
+        mTextViewQRCodeShow=findViewById(R.id.textView_qr_code_value);
         mLayoutScanQRCode= findViewById(R.id.layoutScanQRCode);
+        mCardViewPlace=findViewById(R.id.card_view_place);
+
+        mTextViewLastName=findViewById(R.id.textView_last_name_value);
+        mTextViewFistName=findViewById(R.id.textView_first_name_value);
+        mTextViewEmail=findViewById(R.id.textView_email_value);
+        mTextViewAccountValue=findViewById(R.id.textView_account_value);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -78,36 +88,51 @@ public class Admin_EntranceMode extends AppCompatActivity {
     public void afterQRCodeReturn(String result)
     {
         initScanQRCodeView();
+
+
+
+
         if(result.isEmpty())
         {
 
-
-
-            if(mLayoutScanQRCode!=null)
-            {
-                mLayoutScanQRCode.setBackgroundColor(Color.RED);
-            }
-            else
-            {
-                mTextQRCodeShow.setText("empty layout");
-            }
+            mCardViewPlace.setCardBackgroundColor(Color.RED);
 
         }
         else
         {
-            mTextQRCodeShow.setText(result);
-            boolean isCorrect=true;
-            if(isCorrect)
+            //ask to server
+
+
+            String email="email";
+            String last_name="last_name";
+            String first_name="first_name";
+            Double account=0.0;
+            boolean achiveRequest=true;
+
+            //update view
+            if(achiveRequest)
             {
-//                mLayoutScanQRCode.setBackgroundColor(getResources().getColor(R.color.red));
+                mCardViewPlace.setCardBackgroundColor(Color.GREEN);
+                setPlaceCardInfo(result,email,last_name,first_name,account);
             }
             else
             {
-//                mLayoutScanQRCode.setBackgroundColor(getResources().getColor(R.color.green));
+                mCardViewPlace.setCardBackgroundColor(Color.RED);
             }
+
+
 
         }
 
+    }
+
+    private void setPlaceCardInfo(String code, String email, String last_name, String first_name, Double account)
+    {
+        mTextViewQRCodeShow.setText(code);
+        mTextViewLastName.setText(last_name);
+        mTextViewFistName.setText(first_name);
+        mTextViewEmail.setText(email);
+        mTextViewAccountValue.setText(account.toString()+"€");
     }
 
 }
