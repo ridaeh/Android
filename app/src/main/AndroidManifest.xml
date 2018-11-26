@@ -32,7 +32,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-
         <activity
             android:name=".Login"
             android:label="@string/app_name">
@@ -74,18 +73,27 @@
         <activity
             android:name=".ScannedBarcodeActivity"
             android:label="@string/title_activity_scanned_barcode"
-            android:theme="@style/AppTheme.SlidrActivityTheme"></activity>
+            android:theme="@style/AppTheme.SlidrActivityTheme" />
 
         <provider
-        android:name="android.support.v4.content.FileProvider"
-        android:authorities="${applicationId}.provider"
-        android:exported="false"
-        android:grantUriPermissions="true">
-        <meta-data
-            android:name="android.support.FILE_PROVIDER_PATHS"
-            android:resource="@xml/provider_paths"
-            />
-    </provider>
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <activity
+            android:name=".ScanBraceletActivity"
+            android:label="@string/title_activity_scanned_bracelet"
+            android:theme="@style/AppTheme.SlidrActivityTheme">
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech_filter" />
+
+        </activity>
     </application>
 
 </manifest>

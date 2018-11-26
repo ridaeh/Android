@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -25,7 +27,8 @@ public class Admin_EntranceMode extends AppCompatActivity {
     private ViewFlipper mView;
     private ConstraintLayout mLayoutScanQRCode;
     //define a requestcode to know witch activity return smth
-    int request_Code=12; //qrcode scanner
+    int request_code_scan_qrcode=12; //qrcode scanner
+    int request_code_scan_bracelet=24; //qrcode scanner
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -38,13 +41,16 @@ public class Admin_EntranceMode extends AppCompatActivity {
                     return true;
                 case R.id.navigation_scan_qrcode:
                     initScanQRCodeView();
+                    resetPlaceCard();
                     Intent intent = new Intent(getApplicationContext(), ScannedBarcodeActivity.class);
-                    startActivityForResult(intent,request_Code);
+                    startActivityForResult(intent,request_code_scan_qrcode);
                     mView.setDisplayedChild(1);
 
                     return true;
                 case R.id.navigation_scan_bracelet:
-                    mView.setDisplayedChild(2);
+                    Intent intent2 = new Intent(getApplicationContext(), ScanBraceletActivity.class);
+                    startActivityForResult(intent2,request_code_scan_bracelet);
+//                    mView.setDisplayedChild(2);
                     return true;
             }
             return false;
@@ -71,6 +77,7 @@ public class Admin_EntranceMode extends AppCompatActivity {
         mLayoutScanQRCode= findViewById(R.id.layoutScanQRCode);
         mCardViewPlace=findViewById(R.id.card_view_place);
 
+
         mTextViewLastName=findViewById(R.id.textView_last_name_value);
         mTextViewFistName=findViewById(R.id.textView_first_name_value);
         mTextViewEmail=findViewById(R.id.textView_email_value);
@@ -78,9 +85,14 @@ public class Admin_EntranceMode extends AppCompatActivity {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == request_Code) {
+        if (requestCode == request_code_scan_qrcode) {
             if (resultCode == RESULT_OK) {
                 afterQRCodeReturn(data.getData().toString());
+            }
+        }
+        else if (requestCode == request_code_scan_bracelet) {
+            if (resultCode == RESULT_OK) {
+//                afterQRCodeReturn(data.getData().toString());
             }
         }
     }
@@ -114,6 +126,13 @@ public class Admin_EntranceMode extends AppCompatActivity {
             {
                 mCardViewPlace.setCardBackgroundColor(Color.GREEN);
                 setPlaceCardInfo(result,email,last_name,first_name,account);
+//                Snackbar.make(mView.getCurrentView(), "Now you can bind bracelet", Snackbar.LENGTH_LONG).setAction("Action", new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//
+//                    }
+//                }).show();
+//                mLayoutScanQRCode
             }
             else
             {
@@ -133,6 +152,16 @@ public class Admin_EntranceMode extends AppCompatActivity {
         mTextViewFistName.setText(first_name);
         mTextViewEmail.setText(email);
         mTextViewAccountValue.setText(account.toString()+"€");
+    }
+
+    private void resetPlaceCard()
+    {
+        mTextViewQRCodeShow.setText("");
+        mTextViewLastName.setText("");
+        mTextViewFistName.setText("");
+        mTextViewEmail.setText("");
+        mTextViewAccountValue.setText("");
+        mCardViewPlace.setCardBackgroundColor(Color.WHITE);
     }
 
 }
