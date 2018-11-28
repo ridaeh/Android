@@ -211,4 +211,5 @@
     <string name="last_name">Last Name</string>
     <string name="first_name">First Name</string>
     <string name="title_activity_scanned_bracelet">scan bracelet</string>
+    <string name="action_bind">Bind</string>
 </resources>

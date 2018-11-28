@@ -68,7 +68,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="nothing"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     card_view:layout_constraintStart_toStartOf="parent"
                     card_view:layout_constraintTop_toBottomOf="@+id/textView_first_name_value" />
@@ -78,7 +77,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="nothing"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     card_view:layout_constraintStart_toStartOf="parent"
                     card_view:layout_constraintTop_toBottomOf="@+id/textView_last_name_value" />
@@ -88,7 +86,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="nothing"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     card_view:layout_constraintStart_toStartOf="parent"
                     card_view:layout_constraintTop_toBottomOf="@+id/textView_email_value" />
@@ -98,7 +95,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="nothing"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     card_view:layout_constraintStart_toStartOf="parent"
                     card_view:layout_constraintTop_toBottomOf="@+id/textView_qr_code_value" />

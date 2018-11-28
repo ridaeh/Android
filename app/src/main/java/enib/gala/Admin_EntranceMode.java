@@ -1,5 +1,6 @@
 package enib.gala;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,11 +12,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 
 public class Admin_EntranceMode extends AppCompatActivity {
+
+    private ProgressBar mProgressBarHomeUserChecked;
+    private TextView mTextViewHomeUserChecked;
 
     private TextView mTextViewQRCodeShow;
     private TextView mTextViewLastName;
@@ -24,9 +30,13 @@ public class Admin_EntranceMode extends AppCompatActivity {
     private TextView mTextViewAccountValue;
     private CardView mCardViewPlace;
 
+    private TextView mTextViewBraceletCode;
+    private Button mButtonBind;
+    private String braceletCode;
+
     private ViewFlipper mView;
     private ConstraintLayout mLayoutScanQRCode;
-    //define a requestcode to know witch activity return smth
+    //define a request code to know witch activity return smth
     int request_code_scan_qrcode=12; //qrcode scanner
     int request_code_scan_bracelet=24; //qrcode scanner
 
@@ -37,10 +47,10 @@ public class Admin_EntranceMode extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
+                    setupHome();
                     mView.setDisplayedChild(0);
                     return true;
                 case R.id.navigation_scan_qrcode:
-                    initScanQRCodeView();
                     resetPlaceCard();
                     Intent intent = new Intent(getApplicationContext(), ScannedBarcodeActivity.class);
                     startActivityForResult(intent,request_code_scan_qrcode);
@@ -48,9 +58,17 @@ public class Admin_EntranceMode extends AppCompatActivity {
 
                     return true;
                 case R.id.navigation_scan_bracelet:
-                    Intent intent2 = new Intent(getApplicationContext(), ScanBraceletActivity.class);
-                    startActivityForResult(intent2,request_code_scan_bracelet);
-//                    mView.setDisplayedChild(2);
+                    //lunch scan bracelet activity
+                    Intent i =  new Intent();
+                    i.setClass(getApplicationContext(), ScanBraceletActivity.class);
+                    ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(getApplicationContext(),0,0);
+                    startActivityForResult(i,request_code_scan_bracelet, activityOptions.toBundle());
+
+                    //init display
+                    mButtonBind.setEnabled(false);
+                    mTextViewBraceletCode.setText("");
+
+
                     return true;
             }
             return false;
@@ -64,42 +82,85 @@ public class Admin_EntranceMode extends AppCompatActivity {
 
         mView=findViewById(R.id.vf);
 
-        initScanQRCodeView();
+        initView();
+        setupHome();
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
-
-    private void initScanQRCodeView()
+    private void setupHome()
     {
+        //TODO
+        Integer userChecked=366;
+        Integer userTotal=666;
+        Float percent= (userChecked.floatValue()/userTotal.floatValue())*100;
+        mProgressBarHomeUserChecked.setProgress(percent.intValue());
+        String text=userChecked.toString()+"/"+userTotal.toString();
+        mTextViewHomeUserChecked.setText(text);
+    }
+
+
+    private void initView()
+    {
+        //home
+        mProgressBarHomeUserChecked=findViewById(R.id.progressBarHomeUserChecked);
+        mTextViewHomeUserChecked=findViewById(R.id.textViewHomeUserChecked);
+
+        //qrcode
         mTextViewQRCodeShow=findViewById(R.id.textView_qr_code_value);
         mLayoutScanQRCode= findViewById(R.id.layoutScanQRCode);
         mCardViewPlace=findViewById(R.id.card_view_place);
-
-
         mTextViewLastName=findViewById(R.id.textView_last_name_value);
         mTextViewFistName=findViewById(R.id.textView_first_name_value);
         mTextViewEmail=findViewById(R.id.textView_email_value);
         mTextViewAccountValue=findViewById(R.id.textView_account_value);
+
+        //bracelet
+        mTextViewBraceletCode=findViewById(R.id.textViewBraceletCode);
+        mButtonBind=findViewById(R.id.buttonBind);
+
+        mButtonBind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                //TODO
+            }
+        });
+
+
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == request_code_scan_qrcode) {
             if (resultCode == RESULT_OK) {
                 afterQRCodeReturn(data.getData().toString());
+                //TODO
             }
         }
         else if (requestCode == request_code_scan_bracelet) {
             if (resultCode == RESULT_OK) {
-//                afterQRCodeReturn(data.getData().toString());
+                afterBraceletCodeReturn(data.getData().toString());
+                //TODO
             }
         }
+    }
+    public void afterBraceletCodeReturn(String result)
+    {
+        mView.setDisplayedChild(2);
+        braceletCode=result;
+        boolean achiveRequest=true;//TODO
+        if(achiveRequest)
+        {
+            mButtonBind.setEnabled(true);
+            mTextViewBraceletCode.setText(braceletCode);
+            //TODO
+        }
+
     }
 
     public void afterQRCodeReturn(String result)
     {
-        initScanQRCodeView();
 
 
 
@@ -120,12 +181,21 @@ public class Admin_EntranceMode extends AppCompatActivity {
             String first_name="first_name";
             Double account=0.0;
             boolean achiveRequest=true;
+            boolean alreadyChecked=true;
 
             //update view
             if(achiveRequest)
             {
                 mCardViewPlace.setCardBackgroundColor(Color.GREEN);
                 setPlaceCardInfo(result,email,last_name,first_name,account);
+                if(!alreadyChecked)
+                {
+
+                }
+                else
+                {
+
+                }
 //                Snackbar.make(mView.getCurrentView(), "Now you can bind bracelet", Snackbar.LENGTH_LONG).setAction("Action", new View.OnClickListener() {
 //                    @Override
 //                    public void onClick(View view) {
@@ -136,6 +206,7 @@ public class Admin_EntranceMode extends AppCompatActivity {
             }
             else
             {
+                //WIP : add warning
                 mCardViewPlace.setCardBackgroundColor(Color.RED);
             }
 
