@@ -33,7 +33,6 @@
                 android:id="@+id/textViewHomeUserChecked"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="92/459"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -55,6 +54,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewHomeUserChecked" />
+
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
+
 </android.support.constraint.ConstraintLayout>

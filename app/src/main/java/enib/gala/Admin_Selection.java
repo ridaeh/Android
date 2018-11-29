@@ -46,6 +46,8 @@ public class Admin_Selection extends AppCompatActivity {
 
     public void goToRechargeMode(View view)
     {
+        Intent intent = new Intent(getApplicationContext(), Admin_RechargeMode.class);
+        startActivity(intent);
         return;
     }
 }

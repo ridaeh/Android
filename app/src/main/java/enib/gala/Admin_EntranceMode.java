@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 
@@ -29,13 +30,14 @@ public class Admin_EntranceMode extends AppCompatActivity {
     private TextView mTextViewEmail;
     private TextView mTextViewAccountValue;
     private CardView mCardViewPlace;
+    private Boolean mPlaceWorks=false;
 
     private TextView mTextViewBraceletCode;
     private Button mButtonBind;
-    private String braceletCode;
+    private String mBraceletCode;
 
     private ViewFlipper mView;
-    private ConstraintLayout mLayoutScanQRCode;
+
     //define a request code to know witch activity return smth
     int request_code_scan_qrcode=12; //qrcode scanner
     int request_code_scan_bracelet=24; //qrcode scanner
@@ -58,15 +60,23 @@ public class Admin_EntranceMode extends AppCompatActivity {
 
                     return true;
                 case R.id.navigation_scan_bracelet:
-                    //lunch scan bracelet activity
-                    Intent i =  new Intent();
-                    i.setClass(getApplicationContext(), ScanBraceletActivity.class);
-                    ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(getApplicationContext(),0,0);
-                    startActivityForResult(i,request_code_scan_bracelet, activityOptions.toBundle());
+                    if(mPlaceWorks)
+                    {
+                        //lunch scan bracelet activity
+                        Intent i =  new Intent();
+                        i.setClass(getApplicationContext(), ScanBraceletActivity.class);
+                        ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(getApplicationContext(),0,0);
+                        startActivityForResult(i,request_code_scan_bracelet, activityOptions.toBundle());
 
-                    //init display
-                    mButtonBind.setEnabled(false);
-                    mTextViewBraceletCode.setText("");
+                        //init display
+                        mButtonBind.setEnabled(false);
+                        mTextViewBraceletCode.setText("");
+                    }
+                    else
+                    {
+                        Toast.makeText(getApplicationContext(),"Place Problem", Toast.LENGTH_LONG).show();
+                    }
+
 
 
                     return true;
@@ -109,7 +119,6 @@ public class Admin_EntranceMode extends AppCompatActivity {
 
         //qrcode
         mTextViewQRCodeShow=findViewById(R.id.textView_qr_code_value);
-        mLayoutScanQRCode= findViewById(R.id.layoutScanQRCode);
         mCardViewPlace=findViewById(R.id.card_view_place);
         mTextViewLastName=findViewById(R.id.textView_last_name_value);
         mTextViewFistName=findViewById(R.id.textView_first_name_value);
@@ -145,15 +154,16 @@ public class Admin_EntranceMode extends AppCompatActivity {
             }
         }
     }
+
     public void afterBraceletCodeReturn(String result)
     {
         mView.setDisplayedChild(2);
-        braceletCode=result;
+        mBraceletCode=result;
         boolean achiveRequest=true;//TODO
         if(achiveRequest)
         {
             mButtonBind.setEnabled(true);
-            mTextViewBraceletCode.setText(braceletCode);
+            mTextViewBraceletCode.setText(mBraceletCode);
             //TODO
         }
 
@@ -162,18 +172,15 @@ public class Admin_EntranceMode extends AppCompatActivity {
     public void afterQRCodeReturn(String result)
     {
 
-
-
-
         if(result.isEmpty())
         {
 
             mCardViewPlace.setCardBackgroundColor(Color.RED);
-
+            mPlaceWorks=false;
         }
         else
         {
-            //ask to server
+            //TODO : ask to server
 
 
             String email="email";
@@ -182,6 +189,7 @@ public class Admin_EntranceMode extends AppCompatActivity {
             Double account=0.0;
             boolean achiveRequest=true;
             boolean alreadyChecked=true;
+            mPlaceWorks=achiveRequest&&alreadyChecked;
 
             //update view
             if(achiveRequest)
@@ -202,11 +210,10 @@ public class Admin_EntranceMode extends AppCompatActivity {
 //
 //                    }
 //                }).show();
-//                mLayoutScanQRCode
             }
             else
             {
-                //WIP : add warning
+                //TODO : add warning
                 mCardViewPlace.setCardBackgroundColor(Color.RED);
             }
 
