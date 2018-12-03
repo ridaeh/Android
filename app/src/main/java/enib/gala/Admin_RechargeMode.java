@@ -14,11 +14,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.r0adkll.slidr.Slidr;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Admin_RechargeMode extends AppCompatActivity {
 
@@ -26,11 +31,17 @@ public class Admin_RechargeMode extends AppCompatActivity {
 
     private CardView mCardViewCurrentAccountSolde;
     private CardView mCardViewAddSolde;
+    private CardView mCardViewConsumptionList;
     private TextView mTextViewRechargeInfo;
     private TextView mTextViewSolde;
     private TextView mEditTextAddSolde;
     private ImageButton mImageButtonAdd;
+
     private RadioGroup mRadioGroupPayment;
+    private RadioButton mRadioButtonCash;
+    private RadioButton mRadioButtonCB;
+
+    private ListView mListViewConso;
 
     private View mProgressView;
 
@@ -43,13 +54,19 @@ public class Admin_RechargeMode extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar); setSupportActionBar(toolbar);
         mCardViewCurrentAccountSolde = findViewById(R.id.cardViewCurrentAccountSolde);
         mCardViewAddSolde=findViewById(R.id.cardViewAddSolde);
+        mCardViewConsumptionList=findViewById(R.id.cardViewConsumptionList);
 
         mTextViewRechargeInfo=findViewById(R.id.textViewRechargeInfo);
         mTextViewSolde=findViewById(R.id.editTextSolde);
         mTextViewSolde.setKeyListener(null);
         mImageButtonAdd=findViewById(R.id.imageButtonAdd);
         mEditTextAddSolde=findViewById(R.id.editTextAddSolde);
+
+        //radio button
         mRadioGroupPayment=findViewById(R.id.radioGroupPayment);
+        mRadioButtonCash=findViewById(R.id.radioButtonCash);
+        mRadioButtonCash=findViewById(R.id.radioButtonCB);
+
         mImageButtonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,6 +95,11 @@ public class Admin_RechargeMode extends AppCompatActivity {
 
                 showProgress(true);
                 //TODO
+                boolean success =true;
+                if(success)
+                {
+                    //TODO maj account balance
+                }
 
 
             }
@@ -88,10 +110,25 @@ public class Admin_RechargeMode extends AppCompatActivity {
 
         enableRecharge(false);
 
+        //list
+        mListViewConso=findViewById(R.id.listViewConso);
+        List<Consumption> consumptionList = new ArrayList<Consumption>();
+        consumptionList.add(new Consumption("conso1", 1.1, 1));
+        consumptionList.add(new Consumption("conso2", 2.2, 2));
+        consumptionList.add(new Consumption("conso2", 2.2, 2));
+        consumptionList.add(new Consumption("conso2", 2.2, 2));
+        consumptionList.add(new Consumption("conso2", 2.2, 2));
+        consumptionList.add(new Consumption("conso2", 2.2, 2));
+        consumptionList.add(new Consumption("conso2", 2.2, 2));
+        consumptionList.add(new Consumption("conso2", 2.2, 2));
+        consumptionList.add(new Consumption("conso2", 2.2, 2));
+
+        mListViewConso.setAdapter(new CustomListAdapter(this, consumptionList));
+
         Slidr.attach(this);
 
 
-        //floating butons
+        //floating buttons
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,6 +172,7 @@ public class Admin_RechargeMode extends AppCompatActivity {
         if(enable)
         {
             mCardViewAddSolde.setVisibility(View.VISIBLE);
+            mCardViewConsumptionList.setVisibility(View.VISIBLE);
             mCardViewCurrentAccountSolde.setVisibility(View.VISIBLE);
             mCardViewCurrentAccountSolde.requestFocus();
             mTextViewRechargeInfo.setVisibility(View.GONE);
@@ -142,17 +180,22 @@ public class Admin_RechargeMode extends AppCompatActivity {
         else
         {
             mCardViewAddSolde.setVisibility(View.GONE);
+            mCardViewConsumptionList.setVisibility(View.GONE);
             mCardViewCurrentAccountSolde.setVisibility(View.GONE);
             mTextViewRechargeInfo.setVisibility(View.VISIBLE);
+            resetAddSoldeForm();
         }
+    }
+
+    private void resetAddSoldeForm()
+    {
+        showProgress(false);
+        mEditTextAddSolde.setText("");
+        mRadioGroupPayment.clearCheck();
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
             mCardViewAddSolde.setEnabled(!show);
@@ -166,11 +209,5 @@ public class Admin_RechargeMode extends AppCompatActivity {
                     mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
                 }
             });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-
-        }
     }
 }
