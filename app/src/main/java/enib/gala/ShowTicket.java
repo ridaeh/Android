@@ -28,7 +28,6 @@ public class ShowTicket extends AppCompatActivity {
     private View mProgressView;
     private View mTicketView;
 
-    Thread thread ;
     public int QRcodeWidth ;
     Bitmap bitmap ;
 

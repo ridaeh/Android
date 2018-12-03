@@ -213,4 +213,9 @@
     <string name="title_activity_scanned_bracelet">scan bracelet</string>
     <string name="action_bind">Bind</string>
     <string name="title_activity_admin__recharge_mode">Recharge</string>
+    <string name="solde">Solde</string>
+    <string name="ask_scan_bracelet">Please Scan a Bracelet</string>
+    <string name="add">Add</string>
+    <string name="radio_button_CB">CB</string>
+    <string name="radio_button_cash">Cash</string>
 </resources>

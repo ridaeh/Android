@@ -104,7 +104,7 @@
         <activity
             android:name=".Admin_RechargeMode"
             android:label="@string/title_activity_admin__recharge_mode"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.SlidrActivityTheme"></activity>
     </application>
 
 </manifest>
