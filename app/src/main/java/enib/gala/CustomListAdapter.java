@@ -1,6 +1,7 @@
 package enib.gala;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +51,10 @@ public class CustomListAdapter  extends BaseAdapter {
 
         Consumption Consumption = this.listData.get(position);
         holder.ConsumptionNameView.setText(Consumption.getName());
-        holder.PriceView.setText(Consumption.getPrice().toString()+"€");
+        String price =Consumption.getPrice().toString()+"€";
+        holder.PriceView.setText(price);
+        holder.PriceView.setTextColor(Consumption.getPrice()>=0 ? Color.GREEN : Color.RED);
+
 
         return convertView;
     }

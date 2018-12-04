@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.r0adkll.slidr.Slidr;
 
 public class Admin_Selection extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -17,6 +18,8 @@ public class Admin_Selection extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_selection);
         mAuth = FirebaseAuth.getInstance();
+
+        Slidr.attach(this);
     }
 
     @Override
