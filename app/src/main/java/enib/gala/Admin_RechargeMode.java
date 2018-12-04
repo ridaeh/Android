@@ -12,10 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,12 +36,12 @@ public class Admin_RechargeMode extends AppCompatActivity {
     private ImageButton mImageButtonAdd;
 
     private RadioGroup mRadioGroupPayment;
-    private RadioButton mRadioButtonCash;
-    private RadioButton mRadioButtonCB;
 
     private ListView mListViewConso;
 
     private View mProgressView;
+
+    private boolean mScanned=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +62,6 @@ public class Admin_RechargeMode extends AppCompatActivity {
 
         //radio button
         mRadioGroupPayment=findViewById(R.id.radioGroupPayment);
-        mRadioButtonCash=findViewById(R.id.radioButtonCash);
-        mRadioButtonCash=findViewById(R.id.radioButtonCB);
 
         mImageButtonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +95,7 @@ public class Admin_RechargeMode extends AppCompatActivity {
                 if(success)
                 {
                     //TODO maj account balance
+                    setSolde(21.23);
                 }
 
 
@@ -112,18 +109,7 @@ public class Admin_RechargeMode extends AppCompatActivity {
 
         //list
         mListViewConso=findViewById(R.id.listViewConso);
-        List<Consumption> consumptionList = new ArrayList<Consumption>();
-        consumptionList.add(new Consumption("conso1", 1.1, 1));
-        consumptionList.add(new Consumption("conso2", 2.2, 2));
-        consumptionList.add(new Consumption("conso2", 2.2, 2));
-        consumptionList.add(new Consumption("conso2", 2.2, 2));
-        consumptionList.add(new Consumption("conso2", 2.2, 2));
-        consumptionList.add(new Consumption("conso2", 2.2, 2));
-        consumptionList.add(new Consumption("conso2", 2.2, 2));
-        consumptionList.add(new Consumption("conso2", 2.2, 2));
-        consumptionList.add(new Consumption("conso2", 2.2, 2));
 
-        mListViewConso.setAdapter(new CustomListAdapter(this, consumptionList));
 
         Slidr.attach(this);
 
@@ -132,8 +118,9 @@ public class Admin_RechargeMode extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view) { //scan
                 enableRecharge(false);
+                mScanned=false;
                 Intent i =  new Intent();
                 i.setClass(getApplicationContext(), ScanBraceletActivity.class);
                 ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(getApplicationContext(),0,0);
@@ -144,8 +131,29 @@ public class Admin_RechargeMode extends AppCompatActivity {
         FloatingActionButton fab2 = findViewById(R.id.fab2);
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view) { //cancel
                 enableRecharge(false);
+                mScanned=false;
+                //TODO
+            }
+        });
+
+        FloatingActionButton fab3 = findViewById(R.id.fab3);
+        fab3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { //list
+                enableAdd(false);
+                enableList(true);
+                //TODO
+            }
+        });
+
+        FloatingActionButton fab4 = findViewById(R.id.fab4);
+        fab4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { //add
+                enableList(false);
+                enableAdd(true);
                 //TODO
             }
         });
@@ -154,7 +162,18 @@ public class Admin_RechargeMode extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
          if (requestCode == request_code_scan_bracelet) {
             if (resultCode == RESULT_OK) {
-                afterBraceletCodeReturn(data.getData().toString());
+                try
+                {
+                    String text=data.getData().toString();
+                    afterBraceletCodeReturn(text);
+                }
+                catch (NullPointerException e)
+                {
+                    //TODO
+                    e.getMessage();
+                }
+
+
                 //TODO
             }
         }
@@ -163,24 +182,89 @@ public class Admin_RechargeMode extends AppCompatActivity {
     private void afterBraceletCodeReturn(String result)
     {
         //TODO
+        mScanned=true;
         enableRecharge(true);
-        mTextViewSolde.setText("0.0");
+        setSolde(0.0);
     }
+
+    private void setSolde(Double solde)
+    {
+        String text = solde.toString()+"€";
+        mTextViewSolde.setText(text);
+    }
+
+    private void enableList(boolean enable)
+    {
+
+
+        if(enable)
+        {
+            if(mScanned)
+            {
+                List<Consumption> consumptionList = new ArrayList<>();
+                consumptionList.add(new Consumption("ecocup", -1.0, 1));
+                consumptionList.add(new Consumption("bouteille champagne", -22.0, 2));
+                consumptionList.add(new Consumption("cb", 20.0, 2));
+                consumptionList.add(new Consumption("vestiaire", -1.0, 2));
+                consumptionList.add(new Consumption("preload", 20.0, 2));
+
+
+
+                mListViewConso.setAdapter(new CustomListAdapter(this, consumptionList));
+
+                mCardViewConsumptionList.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(),"Please Scan Fist", Toast.LENGTH_LONG).show();
+            }
+
+
+        }
+        else
+        {
+            mCardViewConsumptionList.setVisibility(View.GONE);
+        }
+    }
+
+    private void enableAdd(boolean enable)
+    {
+
+        if(enable)
+        {
+            if(mScanned)
+            {
+                mCardViewAddSolde.setVisibility(View.VISIBLE);
+                mEditTextAddSolde.requestFocus();
+                resetAddSoldeForm();
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(),"Please Scan Fist", Toast.LENGTH_LONG).show();
+            }
+
+        }
+        else
+        {
+            mCardViewAddSolde.setVisibility(View.GONE);
+        }
+
+
+    }
+
 
     private void enableRecharge(boolean enable)
     {
         if(enable)
         {
-            mCardViewAddSolde.setVisibility(View.VISIBLE);
-            mCardViewConsumptionList.setVisibility(View.VISIBLE);
             mCardViewCurrentAccountSolde.setVisibility(View.VISIBLE);
-            mCardViewCurrentAccountSolde.requestFocus();
+
             mTextViewRechargeInfo.setVisibility(View.GONE);
         }
         else
         {
-            mCardViewAddSolde.setVisibility(View.GONE);
-            mCardViewConsumptionList.setVisibility(View.GONE);
+            enableAdd(false);
+            enableList(false);
             mCardViewCurrentAccountSolde.setVisibility(View.GONE);
             mTextViewRechargeInfo.setVisibility(View.VISIBLE);
             resetAddSoldeForm();

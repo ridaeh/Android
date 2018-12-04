@@ -70,7 +70,8 @@
             android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
             android:name=".Admin_EntranceMode"
-            android:label="@string/title_activity_admin__entrance_mode" />
+            android:label="@string/title_activity_admin__entrance_mode"
+            android:theme="@style/AppTheme.SlidrActivityTheme"></activity>
         <activity
             android:name=".ScannedBarcodeActivity"
             android:label="@string/title_activity_scanned_barcode"

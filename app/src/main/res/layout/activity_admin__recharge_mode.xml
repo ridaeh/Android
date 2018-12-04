@@ -31,7 +31,7 @@
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/colorPrimary"
         app:rippleColor="@color/common_google_signin_btn_text_dark_focused"
-        app:srcCompat="@android:drawable/ic_menu_upload_you_tube" />
+        app:srcCompat="@drawable/ic_center_focus_weak_white_24dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab2"
@@ -39,9 +39,31 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="76dp"
+        android:layout_marginBottom="86dp"
         app:backgroundTint="@color/colorPrimary"
         app:rippleColor="@color/common_google_signin_btn_text_dark_focused"
-        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+        app:srcCompat="@drawable/ic_clear_white_24dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="158dp"
+        app:backgroundTint="@color/colorPrimary"
+        app:rippleColor="@color/common_google_signin_btn_text_dark_focused"
+        app:srcCompat="@drawable/ic_view_list_white_24dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="230dp"
+        app:backgroundTint="@color/colorPrimary"
+        app:rippleColor="@color/common_google_signin_btn_text_dark_focused"
+        app:srcCompat="@drawable/ic_add_white_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

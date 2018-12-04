@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.r0adkll.slidr.Slidr;
+
 
 public class Admin_EntranceMode extends AppCompatActivity {
 
@@ -94,6 +96,8 @@ public class Admin_EntranceMode extends AppCompatActivity {
 
         initView();
         setupHome();
+
+        Slidr.attach(this);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
