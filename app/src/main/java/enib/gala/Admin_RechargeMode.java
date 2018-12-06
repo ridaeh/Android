@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioGroup;
@@ -208,9 +211,28 @@ public class Admin_RechargeMode extends AppCompatActivity {
                 consumptionList.add(new Consumption("vestiaire", -1.0, 2));
                 consumptionList.add(new Consumption("preload", 20.0, 2));
 
-
-
                 mListViewConso.setAdapter(new CustomListAdapter(this, consumptionList));
+
+                mListViewConso.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                    @Override
+                    public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+                        Object o = mListViewConso.getItemAtPosition(position);
+                        Consumption c = (Consumption) o;
+                        Toast.makeText(getApplicationContext(), "Selected :" + " " + c, Toast.LENGTH_LONG).show();
+
+                        AlertDialog alertDialog = new AlertDialog.Builder(Admin_RechargeMode.this).create();
+                        alertDialog.setTitle("Alert");
+                        alertDialog.setMessage(c.toString());
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alertDialog.show();
+                    }
+                });
 
                 mCardViewConsumptionList.setVisibility(View.VISIBLE);
             }
