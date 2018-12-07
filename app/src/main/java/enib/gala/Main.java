@@ -57,9 +57,6 @@ import javax.net.ssl.SSLSocketFactory;
 
 public class Main extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
-    private static final String TAG = "main";
-    private EditText mInfo;
     private TextView mTextViewTest;
     private TextView mTextViewParam;
 
@@ -72,7 +69,6 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
-//        mInfo = findViewById(R.id.editText);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -102,11 +98,12 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
 
         findViewById(R.id.buttonTest).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { //cancel
-//                new HTTPAsyncTask().execute(API_URL);
+            public void onClick(View view) {
                new SendPostRequest().execute();
             }
         });
+
+        new SendPostRequest().execute();
     }
 
     @Override
@@ -122,7 +119,7 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -179,10 +176,11 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
             startActivity(intent);
 
         } else if (id == R.id.nav_history) {
-            Intent intent = new Intent(getApplicationContext(), Store.class);
-            startActivity(intent); //TODO : on activity return update
+
 
         } else if (id == R.id.nav_store) {
+            Intent intent = new Intent(getApplicationContext(), Store.class);
+            startActivity(intent); //TODO : on activity return update
 
         } else if (id == R.id.nav_reload) { //disabled
 
@@ -196,74 +194,6 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-//    class RetrieveFeedTask extends AsyncTask<Void, Void, String> {
-//
-//        private Exception exception;
-//
-//        private static final String TAG_SUCCESS = "success";
-//
-//        String email = "";
-////        String param = "{'login':{'identifier':'marc.marronnier@yopmail.com','password': 'test'}}";
-//
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            pDialog = new ProgressDialog(getApplicationContext());
-//            pDialog.setMessage("execute");
-//            pDialog.setIndeterminate(false);
-//            pDialog.setCancelable(true);
-//            pDialog.show();
-//            mTextViewTest.setText("");
-//            mTextViewParam.setText("");
-//        }
-//
-//        protected String doInBackground(Void... urls) {
-//
-//
-//            return null;
-//        }
-//
-//        protected void onPostExecute(String response) {
-//            if(response == null) {
-//                response = "THERE WAS AN ERROR";
-//            }
-//            Log.i("INFO", response);
-//            mTextViewTest.setText(response);
-//        }
-//    }
-
-//    private class HTTPAsyncTask extends AsyncTask<String, Void, String> {
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            pDialog = new ProgressDialog(Main.this);
-//            pDialog.setMessage("execute");
-//            pDialog.setIndeterminate(false);
-//            pDialog.setCancelable(true);
-//            pDialog.show();
-//            mTextViewTest.setText("");
-//            mTextViewParam.setText("");
-//        }
-//        @Override
-//        protected String doInBackground(String... urls) {
-//            // params comes from the execute() call: params[0] is the url.
-//            try {
-//                try {
-//                    return HttpPost(urls[0]);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                    return "Error!";
-//                }
-//            } catch (IOException e) {
-//                return "Unable to retrieve web page. URL may be invalid.";
-//            }
-//        }
-//        // onPostExecute displays the results of the AsyncTask.
-//        @Override
-//        protected void onPostExecute(String result) {
-//            mTextViewTest.setText(result);
-//            pDialog.dismiss();
-//        }
-//    }
 
     public class SendPostRequest extends AsyncTask<String, Void, String> {
 
@@ -286,10 +216,26 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
 
                 JSONObject postDataParams = buildJsonObject();
                 mTextViewParam.setText(postDataParams.toString());
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                
+                HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+
+                String param =postDataParams.toString();
+
+                con.setReadTimeout(7000);
+                con.setConnectTimeout(7000);
+                con.setDoOutput(true);
+                con.setDoInput(true);
+                con.setInstanceFollowRedirects(false);
+                con.setRequestMethod("POST");
+//                con.setFixedLengthStreamingMode(param.length());
+//                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+                PrintWriter out = new PrintWriter(con.getOutputStream());
+                out.print("stringified=");
+                out.print(param);
+                out.close();
+
                 try {
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
                     StringBuilder stringBuilder = new StringBuilder();
                     String line;
                     while ((line = bufferedReader.readLine()) != null) {
@@ -299,7 +245,7 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
                     return stringBuilder.toString();
                 }
                 finally{
-                    urlConnection.disconnect();
+                    con.disconnect();
                 }
             }
             catch(Exception e) {
@@ -310,7 +256,7 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
 
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
             mTextViewTest.setText("result : "+result);
             pDialog.dismiss();
         }
@@ -341,33 +287,6 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         return result.toString();
     }
 
-    private String HttpPost(String myUrl) throws IOException, JSONException {
-        String result = "";
-
-        URL url = new URL(myUrl);
-
-        // 1. create HttpURLConnection
-        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-
-        // 2. build JSON object
-        JSONObject jsonObject = buildJsonObject();
-        mTextViewParam.setText(jsonObject.toString());
-
-        // 3. add JSON content to POST request body
-        setPostRequestContent(conn, jsonObject);
-
-        // 4. make POST request to the given URL
-        conn.connect();
-
-        // 5. return response message
-        String resp =conn.getResponseMessage()+"";
-        Log.i(Main.class.toString(), resp);
-        return resp;
-
-    }
-
     private JSONObject buildJsonObject() throws JSONException {
 
         JSONObject jsonObject = new JSONObject();
@@ -377,18 +296,6 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         jsonObject2.accumulate("login",jsonObject);
 
         return jsonObject2;
-    }
-
-    private void setPostRequestContent(HttpURLConnection conn,
-                                       JSONObject jsonObject) throws IOException {
-
-        OutputStream os = conn.getOutputStream();
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-        writer.write(jsonObject.toString());
-        Log.i(Main.class.toString(), jsonObject.toString());
-        writer.flush();
-        writer.close();
-        os.close();
     }
 }
 
