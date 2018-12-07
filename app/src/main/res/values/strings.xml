@@ -218,4 +218,7 @@
     <string name="add">Add</string>
     <string name="radio_button_CB">CB</string>
     <string name="radio_button_cash">Cash</string>
+    <string name="nav_store_name">Store</string>
+    <string name="nav_menu_event">Event</string>
+    <string name="nav_ticket_name">Ticket</string>
 </resources>

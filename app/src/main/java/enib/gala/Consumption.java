@@ -1,12 +1,34 @@
 package enib.gala;
 
+import android.support.annotation.NonNull;
+
 public class Consumption { //https://o7planning.org/en/10435/android-listview-tutorial#a1453256
+    //class consommation
     private String name;
     private Double price;
     private Integer id;
     private Integer amount;
     private String allergen=null;
     private String category=null;
+    private Double degreesOfAlcohol=null;
+
+    public Consumption(String name, Double price, Integer id, Integer amount, String allergen, String category, Double degreesOfAlcohol) {
+        this.name = name;
+        this.price = price;
+        this.id = id;
+        this.amount = amount;
+        this.allergen = allergen;
+        this.category = category;
+        this.degreesOfAlcohol = degreesOfAlcohol;
+    }
+
+    public Double getDegreesOfAlcohol() {
+        return degreesOfAlcohol;
+    }
+
+    public void setDegreesOfAlcohol(Double degreesOfAlcohol) {
+        this.degreesOfAlcohol = degreesOfAlcohol;
+    }
 
     public Consumption(String name, Double price, Integer id) {
         this.name = name;
@@ -73,6 +95,32 @@ public class Consumption { //https://o7planning.org/en/10435/android-listview-tu
                 ", amount=" + amount +
                 ", allergen='" + allergen + '\'' +
                 ", category='" + category + '\'' +
+                ", degreesOfAlcohol=" + degreesOfAlcohol +
                 '}';
+    }
+
+    public String toStringProper()
+    {
+        String txt=name;
+        txt+="\n";
+        txt+=price.toString();
+        txt+=" €\n";
+        if (degreesOfAlcohol!=null)
+        {
+            txt+=degreesOfAlcohol.toString();
+            txt+="°\n";
+        }
+        if (allergen!=null)
+        {
+            txt+=allergen.toString();
+            txt+="°\n";
+        }
+        if(amount>1)
+        {
+            txt+="amount : "+amount.toString();
+            txt+="\n";
+        }
+
+        return txt;
     }
 }

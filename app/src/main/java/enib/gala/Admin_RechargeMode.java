@@ -207,6 +207,7 @@ public class Admin_RechargeMode extends AppCompatActivity {
                 List<Consumption> consumptionList = new ArrayList<>();
                 consumptionList.add(new Consumption("ecocup", -1.0, 1));
                 consumptionList.add(new Consumption("bouteille champagne", -22.0, 2));
+                consumptionList.add(new Consumption("metre biere", -12.0, 2013,1,null,null,5.5));
                 consumptionList.add(new Consumption("cb", 20.0, 2));
                 consumptionList.add(new Consumption("vestiaire", -1.0, 2));
                 consumptionList.add(new Consumption("preload", 20.0, 2));
@@ -222,8 +223,8 @@ public class Admin_RechargeMode extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Selected :" + " " + c, Toast.LENGTH_LONG).show();
 
                         AlertDialog alertDialog = new AlertDialog.Builder(Admin_RechargeMode.this).create();
-                        alertDialog.setTitle("Alert");
-                        alertDialog.setMessage(c.toString());
+                        alertDialog.setTitle("Info");
+                        alertDialog.setMessage(c.toStringProper());
                         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {

@@ -59,7 +59,8 @@
             android:name=".Settings"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme" />
-        <activity android:name=".Admin_Selection"
+        <activity
+            android:name=".Admin_Selection"
             android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
             android:name=".Admin_BarMode"
@@ -72,7 +73,7 @@
         <activity
             android:name=".Admin_EntranceMode"
             android:label="@string/title_activity_admin__entrance_mode"
-            android:theme="@style/AppTheme.SlidrActivityTheme"></activity>
+            android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
             android:name=".ScannedBarcodeActivity"
             android:label="@string/title_activity_scanned_barcode"
@@ -106,7 +107,12 @@
         <activity
             android:name=".Admin_RechargeMode"
             android:label="@string/title_activity_admin__recharge_mode"
-            android:theme="@style/AppTheme.SlidrActivityTheme"></activity>
+            android:theme="@style/AppTheme.SlidrActivityTheme" />
+        <activity
+            android:name=".Store"
+            android:theme="@style/AppTheme.SlidrActivityTheme">
+
+        </activity>
     </application>
 
 </manifest>

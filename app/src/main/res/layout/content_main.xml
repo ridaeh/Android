@@ -8,14 +8,30 @@
     tools:context=".Main"
     tools:showIn="@layout/app_bar_main">
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="data"
+    <ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/vf"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="53dp" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/home"
+            layout="@layout/content_main_home" />
+
+        <include
+            android:id="@+id/history"
+            layout="@layout/content_main_history" />
+
+        <include
+            android:id="@+id/reload"
+            layout="@layout/content_main_reload" />
+        <include
+            android:id="@+id/ticket"
+            layout="@layout/content_main_ticket" />
+
+
+    </ViewFlipper>
 </android.support.constraint.ConstraintLayout>
