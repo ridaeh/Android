@@ -2,11 +2,8 @@ package enib.gala;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -19,41 +16,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonObject;
 
-import org.apache.http.params.HttpParams;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
+
 import java.net.URL;
-import java.net.URLEncoder;
-import java.security.KeyStore;
-import java.util.Iterator;
 
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSocketFactory;
 
 public class Main extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private FirebaseAuth mAuth;
@@ -70,6 +48,8 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        toolbar.setTitle("");
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -99,11 +79,11 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         findViewById(R.id.buttonTest).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               new SendPostRequest().execute();
+               new ConnectionPost().execute("marc.marronnier@yopmail.com","test");
             }
         });
 
-        new SendPostRequest().execute();
+        new ConnectionPost().execute("salut","bijour");
     }
 
     @Override
@@ -114,7 +94,6 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         if (currentUser == null) {
             finish();
         }
-
     }
 
     @Override
@@ -176,7 +155,8 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
             startActivity(intent);
 
         } else if (id == R.id.nav_history) {
-
+            Intent intent = new Intent(getApplicationContext(), ShowHistory.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_store) {
             Intent intent = new Intent(getApplicationContext(), Store.class);
@@ -195,7 +175,7 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         return true;
     }
 
-    public class SendPostRequest extends AsyncTask<String, Void, String> {
+    public class ConnectionPost extends AsyncTask<String, Void, String> {
 
         protected void onPreExecute()
         {
@@ -209,25 +189,26 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
             mTextViewParam.setText("");
         }
 
-        protected String doInBackground(String... arg0) {
+        protected String doInBackground(String... args) {
 
             try {
                 URL url = new URL(API_URL); // here is your URL path
-
-                JSONObject postDataParams = buildJsonObject();
-                mTextViewParam.setText(postDataParams.toString());
                 HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-
-                String param =postDataParams.toString();
-
                 con.setReadTimeout(7000);
                 con.setConnectTimeout(7000);
                 con.setDoOutput(true);
                 con.setDoInput(true);
                 con.setInstanceFollowRedirects(false);
                 con.setRequestMethod("POST");
-//                con.setFixedLengthStreamingMode(param.length());
-//                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.accumulate("identifier", args[0]);
+                jsonObject.accumulate("password", args[1]);
+                JSONObject jsonObject2 = new JSONObject();
+                jsonObject2.accumulate("login",jsonObject);
+                String param =jsonObject2.toString();
+                mTextViewParam.setText(param);
+
 
                 PrintWriter out = new PrintWriter(con.getOutputStream());
                 out.print("stringified=");
@@ -256,46 +237,119 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
 
         @Override
         protected void onPostExecute(String result) {
-//            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
             mTextViewTest.setText("result : "+result);
+
+            try {
+
+                JSONObject obj = new JSONObject(result);
+//                JSONArray array = new JSONArray(obj);
+                if((boolean) obj.get("success"))
+                {
+                    String token = (String) obj.get("token");
+                    new ConnectionInfoPost().execute(token);
+                    Toast.makeText(getApplicationContext(),"connected "+token, Toast.LENGTH_LONG).show();
+
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(),"problem", Toast.LENGTH_LONG).show();
+                }
+
+                Log.d("My App", obj.toString());
+
+            } catch (Throwable t) {
+                Log.e("My App", "Could not parse malformed JSON: \"" + result + "\"");
+            }
             pDialog.dismiss();
         }
     }
 
-    public String getPostDataString(JSONObject params) throws Exception {
+    public class ConnectionInfoPost extends AsyncTask<String, Void, String> {
 
-        StringBuilder result = new StringBuilder();
-        boolean first = true;
-
-        Iterator<String> itr = params.keys();
-
-        while(itr.hasNext()){
-
-            String key= itr.next();
-            Object value = params.get(key);
-
-            if (first)
-                first = false;
-            else
-                result.append("&");
-
-            result.append(URLEncoder.encode(key, "UTF-8"));
-            result.append("=");
-            result.append(URLEncoder.encode(value.toString(), "UTF-8"));
-
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(Main.this);
+            pDialog.setMessage("execute");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+            mTextViewTest.setText("");
+            mTextViewParam.setText("");
         }
-        return result.toString();
-    }
 
-    private JSONObject buildJsonObject() throws JSONException {
+        protected String doInBackground(String... args) {
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.accumulate("identifier", "marc.marronnier@yopmail.com");
-        jsonObject.accumulate("password", "test");
-        JSONObject jsonObject2 = new JSONObject();
-        jsonObject2.accumulate("login",jsonObject);
+            try {
+                URL url = new URL(API_URL); // here is your URL path
+                HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+                con.setReadTimeout(7000);
+                con.setConnectTimeout(7000);
+                con.setDoOutput(true);
+                con.setDoInput(true);
+                con.setInstanceFollowRedirects(false);
+                con.setRequestMethod("POST");
 
-        return jsonObject2;
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.accumulate("getLogedUserProfile", true);
+                jsonObject.accumulate("token", args[0]);
+                JSONObject jsonObject2 = new JSONObject();
+                jsonObject2.accumulate("profile",jsonObject);
+                String param =jsonObject2.toString();
+                mTextViewParam.setText(param);
+
+
+                PrintWriter out = new PrintWriter(con.getOutputStream());
+                out.print("stringified=");
+                out.print(param);
+                out.close();
+
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line).append("\n");
+                    }
+                    bufferedReader.close();
+                    return stringBuilder.toString();
+                }
+                finally{
+                    con.disconnect();
+                }
+            }
+            catch(Exception e) {
+                Log.e("ERROR", e.getMessage(), e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            mTextViewTest.setText("result : "+result);
+
+            try {
+
+                JSONObject obj = new JSONObject(result);
+//                JSONArray array = new JSONArray(obj);
+                if((boolean) obj.get("success"))
+                {
+                    String token = (String) obj.get("token");
+                    Toast.makeText(getApplicationContext(),"success", Toast.LENGTH_LONG).show();
+
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(),"problem", Toast.LENGTH_LONG).show();
+                }
+
+                Log.d("My App", obj.toString());
+
+            } catch (Throwable t) {
+                Log.e("My App", "Could not parse malformed JSON: \"" + result + "\"");
+            }
+            pDialog.dismiss();
+        }
     }
 }
 
