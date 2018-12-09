@@ -152,7 +152,7 @@ public class ScannedBarcodeActivity extends AppCompatActivity {
 
                             }
                             txtBarcodeValue.setText(intentData);
-                            Toast.makeText(getApplicationContext(),intentData, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(getApplicationContext(),intentData, Toast.LENGTH_SHORT).show();
                             beforeEndActivity();
                             finish();
                         }

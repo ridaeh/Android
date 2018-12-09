@@ -67,10 +67,6 @@
             android:name=".Admin_Selection"
             android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
-            android:name=".Admin_BarMode"
-            android:label="@string/title_activity_admin__bar_mode"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".ShowTicket"
             android:label="@string/title_activity_show_ticket"
             android:theme="@style/AppTheme.SlidrActivityTheme" />
@@ -114,10 +110,14 @@
             android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
             android:name=".Store"
-            android:theme="@style/AppTheme.SlidrActivityTheme"></activity>
+            android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
             android:name=".ShowHistory"
-            android:theme="@style/AppTheme.SlidrActivityTheme" ></activity>
+            android:theme="@style/AppTheme.SlidrActivityTheme" />
+        <activity
+            android:name=".Admin_BarMode"
+            android:label="@string/title_activity_admin__bar_mode"
+            android:theme="@style/AppTheme.SlidrActivityTheme"></activity>
     </application>
 
 </manifest>

@@ -24,7 +24,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="left"
                 android:scaleType="fitStart"
-                android:src="@drawable/ic_logo_leap" />
+                android:src="@drawable/ic_logo_leap"
+                android:contentDescription="TODO" />
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>

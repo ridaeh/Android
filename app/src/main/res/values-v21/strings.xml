@@ -13,4 +13,7 @@
     <string name="nav_menu_event">Event</string>
     <string name="nav_ticket_name">Ticket</string>
     <string name="Historic">Historic</string>
+    <string name="title_product_selection">Selection</string>
+    <string name="title_list_product">List</string>
+    <string name="title_scan_and_pay"><![CDATA[Scan&Pay]]></string>
 </resources>

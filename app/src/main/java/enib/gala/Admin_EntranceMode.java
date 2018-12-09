@@ -1,15 +1,20 @@
 package enib.gala;
 
 import android.app.ActivityOptions;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -20,8 +25,17 @@ import android.widget.ViewFlipper;
 
 import com.r0adkll.slidr.Slidr;
 
+import org.json.JSONObject;
 
-public class Admin_EntranceMode extends AppCompatActivity {
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
+
+
+public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private ProgressBar mProgressBarHomeUserChecked;
     private TextView mTextViewHomeUserChecked;
@@ -39,6 +53,8 @@ public class Admin_EntranceMode extends AppCompatActivity {
     private String mBraceletCode;
 
     private ViewFlipper mView;
+
+    private SwipeRefreshLayout mSwipeRefresh;
 
     //define a request code to know witch activity return smth
     int request_code_scan_qrcode=12; //qrcode scanner
@@ -101,6 +117,24 @@ public class Admin_EntranceMode extends AppCompatActivity {
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        mSwipeRefresh=findViewById(R.id.swipeRefresh);
+        mSwipeRefresh.setOnRefreshListener(this);
+
+
+
+    }
+
+    @Override
+    public void onRefresh() {
+        Toast.makeText(this, "Refresh", Toast.LENGTH_SHORT).show();
+        setupHome();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefresh.setRefreshing(false);
+            }
+        }, 2000);
     }
 
     private void setupHome()
@@ -179,52 +213,27 @@ public class Admin_EntranceMode extends AppCompatActivity {
         if(result.isEmpty())
         {
 
-            mCardViewPlace.setCardBackgroundColor(Color.RED);
-            mPlaceWorks=false;
+            placeValid(false);
+            //add warning
         }
         else
         {
-            //TODO : ask to server
-
-
-            String email="email";
-            String last_name="last_name";
-            String first_name="first_name";
-            Double account=0.0;
-            boolean achiveRequest=true;
-            boolean alreadyChecked=true;
-            mPlaceWorks=achiveRequest&&alreadyChecked;
-
-            //update view
-            if(achiveRequest)
-            {
-                mCardViewPlace.setCardBackgroundColor(Color.GREEN);
-                setPlaceCardInfo(result,email,last_name,first_name,account);
-                if(!alreadyChecked)
-                {
-
-                }
-                else
-                {
-
-                }
-//                Snackbar.make(mView.getCurrentView(), "Now you can bind bracelet", Snackbar.LENGTH_LONG).setAction("Action", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//
-//                    }
-//                }).show();
-            }
-            else
-            {
-                //TODO : add warning
-                mCardViewPlace.setCardBackgroundColor(Color.RED);
-            }
-
-
-
+            new QRCodeCheck().execute(result);
         }
 
+    }
+
+    private void placeValid(boolean isValid)
+    {
+        if(isValid)
+        {
+            mCardViewPlace.setCardBackgroundColor(Color.GREEN);
+        }
+        else
+        {
+            //TODO : add warning
+            mCardViewPlace.setCardBackgroundColor(Color.RED);
+        }
     }
 
     private void setPlaceCardInfo(String code, String email, String last_name, String first_name, Double account)
@@ -233,7 +242,8 @@ public class Admin_EntranceMode extends AppCompatActivity {
         mTextViewLastName.setText(last_name);
         mTextViewFistName.setText(first_name);
         mTextViewEmail.setText(email);
-        mTextViewAccountValue.setText(account.toString()+"€");
+        String value=account.toString()+"€";
+        mTextViewAccountValue.setText(value);
     }
 
     private void resetPlaceCard()
@@ -244,6 +254,90 @@ public class Admin_EntranceMode extends AppCompatActivity {
         mTextViewEmail.setText("");
         mTextViewAccountValue.setText("");
         mCardViewPlace.setCardBackgroundColor(Color.WHITE);
+    }
+
+    public class QRCodeCheck extends AsyncTask<String, Void, String> {
+
+        static final String API_URL = "https://api.leeap.cash/";
+
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+        }
+
+        protected String doInBackground(String... args) {
+
+            try {
+                URL url = new URL(API_URL); // here is your URL path
+                HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+                con.setReadTimeout(7000);
+                con.setConnectTimeout(7000);
+                con.setDoOutput(true);
+                con.setDoInput(true);
+                con.setInstanceFollowRedirects(false);
+                con.setRequestMethod("POST");
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.accumulate("QRCode", args[0]);
+                JSONObject jsonObject2 = new JSONObject();
+                jsonObject2.accumulate("ticket",jsonObject);
+                String param =jsonObject2.toString();
+
+
+                PrintWriter out = new PrintWriter(con.getOutputStream());
+                out.print("stringified=");
+                out.print(param);
+                out.close();
+
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line).append("\n");
+                    }
+                    bufferedReader.close();
+                    return stringBuilder.toString();
+                }
+                finally{
+                    con.disconnect();
+                }
+            }
+            catch(Exception e) {
+                Log.e("ERROR", e.getMessage(), e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getApplicationContext(),result, Toast.LENGTH_LONG).show();
+            try {
+
+                JSONObject obj = new JSONObject(result);
+//                JSONArray array = new JSONArray(obj);
+                if((boolean) obj.get("success"))
+                {
+
+                    placeValid(true);
+//                    Integer used=(Integer) obj.get("Used"); //TODO if used -> do smth
+                    setPlaceCardInfo((String) obj.get("QRCode"),(String) obj.get("Email"),(String) obj.get("Name"),(String) obj.get("Firstname"),0.0); //TODO account balance
+
+                    Toast.makeText(getApplicationContext(),"success", Toast.LENGTH_LONG).show();
+
+                }
+                else
+                {
+                    placeValid(false);
+                    Toast.makeText(getApplicationContext(),"problem", Toast.LENGTH_LONG).show();
+                }
+
+                Log.d("My App", obj.toString());
+
+            } catch (Throwable t) {
+                Log.e("My App", "Could not parse malformed JSON: \"" + result + "\"");
+            }
+        }
     }
 
 }
