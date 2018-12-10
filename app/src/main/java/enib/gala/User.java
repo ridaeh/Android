@@ -1,5 +1,20 @@
 package enib.gala;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
+
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
+
 public class User {
     private Integer id;
     private String firstName;
@@ -11,17 +26,36 @@ public class User {
     private Integer postCode;
     private String password;
     private Double balance; //solde
-    private String tokensConnexion;
+    private String token;
     private String admin;
     private Integer permissions;
 
-    public User(Integer id, String email, String password) {
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", phoneIndicative='" + phoneIndicative + '\'' +
+                ", city='" + city + '\'' +
+                ", postCode=" + postCode +
+                ", balance=" + balance +
+                ", token='" + token + '\'' +
+                ", admin='" + admin + '\'' +
+                ", permissions=" + permissions +
+                '}';
+    }
+
+    public User(Integer id, String email, String password, String token) {
         this.id = id;
         this.email = email;
         this.password = password;
+        this.token = token;
     }
 
-    public User(Integer id, String firstName, String lastName, String email, String phone, String phoneIndicative, String city, Integer postCode, String password, Double balance, String tokensConnexion, String admin, Integer permissions) {
+    public User(Integer id, String firstName, String lastName, String email, String phone, String phoneIndicative, String city, Integer postCode, String password, Double balance, String token, String admin, Integer permissions) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -32,7 +66,7 @@ public class User {
         this.postCode = postCode;
         this.password = password;
         this.balance = balance;
-        this.tokensConnexion = tokensConnexion;
+        this.token = token;
         this.admin = admin;
         this.permissions = permissions;
     }
@@ -57,6 +91,9 @@ public class User {
         return User.this;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public Integer getId() {
         return id;
@@ -106,8 +143,12 @@ public class User {
         return balance;
     }
 
-    public String getTokensConnexion() {
-        return tokensConnexion;
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getAdmin() {
@@ -117,4 +158,5 @@ public class User {
     public Integer getPermissions() {
         return permissions;
     }
+
 }
