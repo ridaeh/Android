@@ -46,11 +46,19 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
     private TextView mTextViewEmail;
     private TextView mTextViewAccountValue;
     private CardView mCardViewPlace;
+    private CardView mCardViewInfo;
     private Boolean mPlaceWorks=false;
+    private Boolean mBraceletWorks=false;
 
     private TextView mTextViewBraceletCode;
+    private TextView mTextViewBraceletInfo;
+    private TextView mTextViewPlaceInfo;
+
     private Button mButtonBind;
-    private String mBraceletCode;
+    private String mQRCodeValue=null;;
+    private String mBraceletValue=null;;
+
+    private ProgressDialog pDialog;
 
     private ViewFlipper mView;
 
@@ -94,8 +102,6 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
                     {
                         Toast.makeText(getApplicationContext(),"Place Problem", Toast.LENGTH_LONG).show();
                     }
-
-
 
                     return true;
             }
@@ -162,16 +168,19 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
         mTextViewFistName=findViewById(R.id.textView_first_name_value);
         mTextViewEmail=findViewById(R.id.textView_email_value);
         mTextViewAccountValue=findViewById(R.id.textView_account_value);
+        mTextViewPlaceInfo=findViewById(R.id.textViewPlaceInfo);
 
         //bracelet
         mTextViewBraceletCode=findViewById(R.id.textViewBraceletCode);
         mButtonBind=findViewById(R.id.buttonBind);
+        mCardViewInfo=findViewById(R.id.cardViewInfo);
+        mTextViewBraceletInfo=findViewById(R.id.textViewBraceletInfo);
 
         mButtonBind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                //TODO
+                new BraceletCheck().execute(mBraceletValue,mQRCodeValue);
             }
         });
 
@@ -195,15 +204,22 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
 
     public void afterBraceletCodeReturn(String result)
     {
-        mView.setDisplayedChild(2);
-        mBraceletCode=result;
-        boolean achiveRequest=true;//TODO
-        if(achiveRequest)
+        mTextViewBraceletCode.setText(result);
+
+        if(result.isEmpty())
         {
-            mButtonBind.setEnabled(true);
-            mTextViewBraceletCode.setText(mBraceletCode);
             //TODO
+            mBraceletValue=null;
+            mBraceletWorks=false;
+
         }
+        else
+        {
+            mBraceletValue=result;
+            mView.setDisplayedChild(2);
+            mButtonBind.setEnabled(true);
+        }
+
 
     }
 
@@ -212,12 +228,14 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
 
         if(result.isEmpty())
         {
-
+            mQRCodeValue=null;
             placeValid(false);
-            //add warning
+            //TODO add warning
+            mPlaceWorks=false;
         }
         else
         {
+            mQRCodeValue=result;
             new QRCodeCheck().execute(result);
         }
 
@@ -233,6 +251,18 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
         {
             //TODO : add warning
             mCardViewPlace.setCardBackgroundColor(Color.RED);
+        }
+    }
+    private void braceletValid(boolean isValid) //TODO
+    {
+        if(isValid)
+        {
+            mCardViewInfo.setCardBackgroundColor(Color.GREEN);
+        }
+        else
+        {
+            //TODO : add warning
+            mCardViewInfo.setCardBackgroundColor(Color.RED);
         }
     }
 
@@ -311,23 +341,36 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
 
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(getApplicationContext(),result, Toast.LENGTH_LONG).show();
+            mTextViewPlaceInfo.setText(result);
             try {
 
                 JSONObject obj = new JSONObject(result);
 //                JSONArray array = new JSONArray(obj);
                 if((boolean) obj.get("success"))
                 {
-
-                    placeValid(true);
-//                    Integer used=(Integer) obj.get("Used"); //TODO if used -> do smth
+                    mPlaceWorks=true; //TODO after debug set false if already used
+                    String used=(String) obj.get("Used");
                     setPlaceCardInfo((String) obj.get("QRCode"),(String) obj.get("Email"),(String) obj.get("Name"),(String) obj.get("Firstname"),0.0); //TODO account balance
+                    if (used=="0")
+                    {
+                        //unused ticket
+                        Toast.makeText(getApplicationContext(),"success", Toast.LENGTH_LONG).show();
+                        placeValid(true);
+                    }
+                    else
+                    {
+                        //already used ticket
+                        Toast.makeText(getApplicationContext(),"already used", Toast.LENGTH_LONG).show();
+                        placeValid(false);
+                    }
 
-                    Toast.makeText(getApplicationContext(),"success", Toast.LENGTH_LONG).show();
+
+
 
                 }
                 else
                 {
+                    mPlaceWorks=false;
                     placeValid(false);
                     Toast.makeText(getApplicationContext(),"problem", Toast.LENGTH_LONG).show();
                 }
@@ -337,6 +380,102 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
             } catch (Throwable t) {
                 Log.e("My App", "Could not parse malformed JSON: \"" + result + "\"");
             }
+        }
+    }
+
+    public class BraceletCheck extends AsyncTask<String, Void, String> {
+
+        static final String API_URL = "https://api.leeap.cash/";
+
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(Admin_EntranceMode.this);
+            pDialog.setMessage("execute");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+
+        protected String doInBackground(String... args) {
+
+            try {
+                URL url = new URL(API_URL); // here is your URL path
+                HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+                con.setReadTimeout(7000);
+                con.setConnectTimeout(7000);
+                con.setDoOutput(true);
+                con.setDoInput(true);
+                con.setInstanceFollowRedirects(false);
+                con.setRequestMethod("POST");
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.accumulate("QRCode", args[1]);
+                jsonObject.accumulate("bracelet", args[0]);
+                JSONObject jsonObject2 = new JSONObject();
+                jsonObject2.accumulate("bind",jsonObject);
+                JSONObject jsonObject3 = new JSONObject();
+                jsonObject3.accumulate("ticket",jsonObject2);
+                String param =jsonObject3.toString();
+
+
+                PrintWriter out = new PrintWriter(con.getOutputStream());
+                out.print("stringified=");
+                out.print(param);
+                out.close();
+
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line).append("\n");
+                    }
+                    bufferedReader.close();
+                    return stringBuilder.toString();
+                }
+                finally{
+                    con.disconnect();
+                }
+            }
+            catch(Exception e) {
+                Log.e("ERROR", e.getMessage(), e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            mTextViewBraceletInfo.setText(result);
+            try {
+
+                JSONObject obj = new JSONObject(result);
+//                JSONArray array = new JSONArray(obj);
+                if((boolean) obj.get("success"))
+                {
+                    //TODO check if already used
+                    braceletValid(true);
+                    mBraceletWorks=true;
+
+                    Toast.makeText(getApplicationContext(),"success ", Toast.LENGTH_LONG).show();
+
+
+                }
+                else
+                {
+                    mBraceletWorks=false;
+                    braceletValid(false);
+                    Toast.makeText(getApplicationContext(),"problem", Toast.LENGTH_LONG).show();
+
+                }
+
+                Log.d("My App", obj.toString());
+
+            } catch (Throwable t) {
+                Log.e("My App", "Could not parse malformed JSON: \"" + result + "\"");
+            }
+            pDialog.dismiss();
         }
     }
 

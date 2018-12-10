@@ -15,6 +15,12 @@ public class User {
     private String admin;
     private Integer permissions;
 
+    public User(Integer id, String email, String password) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+    }
+
     public User(Integer id, String firstName, String lastName, String email, String phone, String phoneIndicative, String city, Integer postCode, String password, Double balance, String tokensConnexion, String admin, Integer permissions) {
         this.id = id;
         this.firstName = firstName;
@@ -56,6 +62,10 @@ public class User {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -66,6 +76,10 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPhone() {

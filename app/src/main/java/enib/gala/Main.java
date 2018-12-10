@@ -84,6 +84,8 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         });
 
         new ConnectionPost().execute("salut","bijour");
+
+        MyDBHandler dbHandler = new MyDBHandler(this, null, null, 1);
     }
 
     @Override
