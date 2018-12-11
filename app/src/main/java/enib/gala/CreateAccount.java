@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.r0adkll.slidr.Slidr;
 
 public class CreateAccount extends AppCompatActivity {
     private EditText email;
@@ -45,6 +46,8 @@ public class CreateAccount extends AppCompatActivity {
         mAuth = new UserAuth(getApplicationContext());
 
         Log.d(TAG, "onCreate");
+
+        Slidr.attach(this);
 
     }
     @Override

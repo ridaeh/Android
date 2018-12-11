@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,8 +23,6 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
     private TextView mTextViewTest;
     private TextView mTextViewParam;
     private TextView mTextViewUserEmail;
-
-    static final String API_URL = "https://api.leeap.cash/";
 
     private ProgressDialog pDialog;
 
@@ -64,23 +63,7 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         findViewById(R.id.buttonTest).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAuth.signIn("marc.marronnier@yopmail.com","test").setSignInCompleteListener(new UserAuth.SignInCompleteListener() {
-                    @Override
-                    public void SignInComplete(boolean success) {
-                        if(success)
-                        {
-                            mUser = mAuth.getCurrentUser();
-                            Toast.makeText(getApplicationContext(),"success", Toast.LENGTH_LONG).show();
 
-
-                        }
-                        else
-                        {
-                            Toast.makeText(getApplicationContext(),"problem", Toast.LENGTH_LONG).show();
-                        }
-
-                    }
-                });
             }
         });
     }
@@ -94,10 +77,24 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         if(mUser!=null)
         {
             mTextViewTest.setText(mUser.toString());
+            mAuth.getAllInfo(mAuth.getCurrentUser()).getAllInfoListener(new UserAuth.GetAllInfoListener() {
+                @Override
+                public void GetAllInfoComplete(User u) {
+                    if (u!=null)
+                    {
+//                        Toast.makeText(getApplicationContext(),"success", Toast.LENGTH_LONG).show();
+                        Log.i("getAllInfo getAllInfoListener return", u.toString());
+
+                        mUser=u;
+                        mTextViewTest.setText(mUser.toString());
+                    }
+                }
+            });
         }
         else
         {
             mTextViewTest.setText("no current user");
+            finish();
         }
     }
 

@@ -9,6 +9,7 @@ public class User {
     private String phoneIndicative;
     private String city;
     private Integer postCode;
+    private String address;
     private String password;
     private Double balance; //solde
     private String token;
@@ -40,7 +41,7 @@ public class User {
         this.token = token;
     }
 
-    public User(Integer id, String firstName, String lastName, String email, String phone, String phoneIndicative, String city, Integer postCode, String password, Double balance, String token, String admin, Integer permissions) {
+    public User(Integer id, String firstName, String lastName, String email, String phone, String phoneIndicative, String city, Integer postCode, String address, String password, Double balance, String token, String admin, Integer permissions) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -49,6 +50,7 @@ public class User {
         this.phoneIndicative = phoneIndicative;
         this.city = city;
         this.postCode = postCode;
+        this.address = address;
         this.password = password;
         this.balance = balance;
         this.token = token;

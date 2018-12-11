@@ -10,14 +10,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.r0adkll.slidr.Slidr;
 
 public class Admin_Selection extends AppCompatActivity {
-    private FirebaseAuth mAuth;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_selection);
-        mAuth = FirebaseAuth.getInstance();
+
 
         Slidr.attach(this);
     }
@@ -26,10 +26,7 @@ public class Admin_Selection extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            finish();
-        }
+
 
     }
 

@@ -26,6 +26,8 @@ public class UserAuth {
 //    private String mToken;
     private String mPassword;
     private String mEmail;
+    private String mToken;
+    private Integer mId;
 
     public UserAuth(Context context)
     {
@@ -72,9 +74,24 @@ public class UserAuth {
         return this;
     }
 
-    public User getAllInfo(User u)
+    public UserAuth getAllInfo(User u)
     {
-        return u;
+        if(u!=null)
+        {
+            Log.i("getAllInfo", "user not empty");
+            mPassword=u.getPassword();
+            mEmail=u.getEmail();
+            mToken=u.getToken();
+            mId=u.getId();
+            new ConnectionInfoPost().execute(mToken);
+        }
+        else
+        {
+            Log.e("getAllInfo", "user null");
+            listenerGetAllInfo.GetAllInfoComplete(null);
+        }
+
+        return this;
     }
 
     public interface GetAllInfoListener {
@@ -162,17 +179,22 @@ public class UserAuth {
 //                JSONArray array = new JSONArray(obj);
                 if((boolean) obj.get("success"))
                 {
-                    String token = (String) obj.get("token");
+                    Log.i("getAllInfo onPostExecute", "success");
+//                    Integer postcode =Integer.parseInt((String) obj.get("Postcode"));
+                    listenerGetAllInfo.GetAllInfoComplete(new User(mId,(String) obj.get("Firstname"),(String) obj.get("Lastname"),(String) obj.get("Email"),(String) obj.get("Phone"),(String) obj.get("PhoneIndicative"),(String) obj.get("City"),null,(String) obj.get("Address"),mPassword,null,mToken,null,null));
+
                 }
                 else
                 {
+                    Log.e("getAllInfo onPostExecute", "error");
                     //TODO
                 }
 
-                Log.d("My App", obj.toString());
+                listenerGetAllInfo.GetAllInfoComplete(null);
 
             } catch (Throwable t) {
                 Log.e("My App", "Could not parse malformed JSON: \"" + result + "\"");
+                listenerGetAllInfo.GetAllInfoComplete(null);
 
             }
 
