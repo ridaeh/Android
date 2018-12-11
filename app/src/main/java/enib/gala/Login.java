@@ -43,28 +43,20 @@ import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-/**
- * A login screen that offers login via email/password.
- */
 public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
     private static final int REQUEST_READ_CONTACTS = 0;
 
     private static final String TAG = "Login";
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private FirebaseAuth mAuth;
+
+    private UserAuth mAuth;
+    private User mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,20 +85,28 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 attemptLogin();
             }
         });
+        mAuth = new UserAuth(getApplicationContext());
+
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
+        mUser = mAuth.getCurrentUser();
+        if(mUser!=null)
+        {
+            //TODO
             Intent intent = new Intent(getApplicationContext(), Main.class);
             startActivity(intent);
+            finish();
+        }
+        else
+        {
+            //TODO
         }
 
     }
@@ -167,9 +167,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
+
 
         // Reset errors.
         mEmailView.setError(null);
@@ -213,8 +211,23 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            mAuth.signIn(email,password).setSignInCompleteListener(new UserAuth.SignInCompleteListener() {
+                @Override
+                public void SignInComplete(boolean success) {
+                    if(success)
+                    {
+                        Toast.makeText(getApplicationContext(),"success", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getApplicationContext(), Main.class);
+                        startActivity(intent);
+
+                    }
+                    else
+                    {
+                        Toast.makeText(getApplicationContext(),"error", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
         }
     }
 
@@ -316,72 +329,6 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
-    }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-        private boolean noError;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            showProgress(true);
-            noError=true;
-            mAuth.signInWithEmailAndPassword(mEmail, mPassword)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Log.d(TAG, "signInWithEmail:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                Intent intent = new Intent(getApplicationContext(), Main.class);
-                                startActivity(intent);
-                                finish();
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                Toast.makeText(getApplicationContext(), "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
-                                noError=false;
-                            }
-
-                            // ...
-                        }
-                    });
-            return noError;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-//            showProgress(false);
-
-            if (success) {
-                Toast.makeText(getApplicationContext(), "Connection success",
-                        Toast.LENGTH_SHORT).show();
-
-            } else {
-                mEmailView.setError("error invalid email or password");
-                mEmailView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
     }
 }
 

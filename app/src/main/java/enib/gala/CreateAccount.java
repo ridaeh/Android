@@ -18,11 +18,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class CreateAccount extends AppCompatActivity {
-    private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
     private EditText email;
     private EditText password;
+    private EditText mEditTextPhoneNumber;
+    private EditText mEditTextFirstName;
     private TextView status;
+
+    private UserAuth mAuth;
+    private User mUser;
 
     private static final String TAG = "createAccount";
 
@@ -30,25 +33,34 @@ public class CreateAccount extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
-        mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
 
         email =  findViewById(R.id.editTextEmail);
         password =  findViewById(R.id.editTextPassword);
         status = findViewById(R.id.textViewStatut);
+        mEditTextPhoneNumber=findViewById(R.id.editViewPhoneNumber);
+        mEditTextFirstName=findViewById(R.id.editViewFirstName);
+
         email.requestFocus();
+
+        mAuth = new UserAuth(getApplicationContext());
+
         Log.d(TAG, "onCreate");
 
     }
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        currentUser = mAuth.getCurrentUser();
-        if (currentUser !=null )
+        mUser = mAuth.getCurrentUser();
+        if(mUser!=null)
         {
+            //TODO
             Intent intent = new Intent(getApplicationContext(), Main.class);
             startActivity(intent);
+            finish();
+        }
+        else
+        {
+            //TODO
         }
     }
 
@@ -59,7 +71,11 @@ public class CreateAccount extends AppCompatActivity {
         password.setError(null);
         String email_ =email.getText().toString();
         String password_ =password.getText().toString();
-        Switch conditionAccept = (Switch) findViewById(R.id.switch_accept_condition);
+        String phoneNumber =mEditTextPhoneNumber.getText().toString();
+
+        String firstName =mEditTextFirstName.getText().toString();
+
+        Switch conditionAccept = findViewById(R.id.switch_accept_condition);
 
         if (!conditionAccept.isChecked())
         {
@@ -74,29 +90,27 @@ public class CreateAccount extends AppCompatActivity {
             Log.d(TAG, "createUserWithEmail:invalidParams");
             return;
         }
-        mAuth.createUserWithEmailAndPassword(email_,password_ )
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
-                            status.setText("success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            finish();
-//                            updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(getApplicationContext(), "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            status.setText("failure");
-//                            updateUI(null);
-                        }
+        if (phoneNumber.isEmpty() || firstName.isEmpty())
+        {
+            Log.d(TAG, "createUserWithEmail:phoneNumber or fistName empty");
+            return;
+        }
 
-                        // ...
-                    }
-                });
+        mAuth.signUp(firstName,email_,password_,phoneNumber).setSignUpCompleteListener(new UserAuth.SignUpCompleteListener() {
+            @Override
+            public void SignUpComplete(boolean success) {
+                if(success)
+                {
+                    Toast.makeText(getApplicationContext(),"success", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(),"error", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
 
     }
 

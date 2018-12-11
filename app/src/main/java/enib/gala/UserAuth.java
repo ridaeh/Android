@@ -20,6 +20,7 @@ public class UserAuth {
 
     private SignInCompleteListener listenerSignIn;
     private SignUpCompleteListener listenerSignUp;
+    private GetAllInfoListener listenerGetAllInfo;
     private Context mContext;
 
 //    private String mToken;
@@ -30,6 +31,7 @@ public class UserAuth {
     {
         this.listenerSignIn = null;
         this.listenerSignUp = null;
+        this.listenerGetAllInfo = null;
         this.mContext=context;
     }
 
@@ -62,19 +64,29 @@ public class UserAuth {
         return this;
     }
 
-    public void signUp(String firstname, String email, String password, String phone)
+    public UserAuth signUp(String firstname, String email, String password, String phone)
     {
-        //TODO
+        mPassword=password;
+        mEmail=email;
+        new InscriptionPost().execute(firstname,email,password,phone);
+        return this;
     }
 
-    public interface SignInCompleteListener {
-        void SignInComplete(boolean success);
+    public User getAllInfo(User u)
+    {
+        return u;
+    }
 
+    public interface GetAllInfoListener {
+        void GetAllInfoComplete(User u);
     }
 
     public interface SignUpCompleteListener {
         void SignUpComplete(boolean success);
+    }
 
+    public interface SignInCompleteListener {
+        void SignInComplete(boolean success);
     }
 
     public void setSignInCompleteListener(SignInCompleteListener listener) {
@@ -83,6 +95,11 @@ public class UserAuth {
 
     public void setSignUpCompleteListener(SignUpCompleteListener listener) {
         this.listenerSignUp = listener;
+    }
+
+    public void getAllInfoListener(GetAllInfoListener listener)
+    {
+        this.listenerGetAllInfo=listener;
     }
 
     public class ConnectionInfoPost extends AsyncTask<String, Void, String> {
@@ -244,6 +261,85 @@ public class UserAuth {
             } catch (Throwable t) {
                 Log.e("My App", "Could not parse malformed JSON: \"" + result + "\"");
                 listenerSignIn.SignInComplete(false);
+            }
+        }
+    }
+    public class InscriptionPost extends AsyncTask<String, Void, String> {
+
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+        }
+
+        protected String doInBackground(String... args) {
+
+            try {
+                URL url = new URL(API_URL); // here is your URL path
+                HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+                con.setReadTimeout(7000);
+                con.setConnectTimeout(7000);
+                con.setDoOutput(true);
+                con.setDoInput(true);
+                con.setInstanceFollowRedirects(false);
+                con.setRequestMethod("POST");
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.accumulate("firstname", args[0]);
+                jsonObject.accumulate("email", args[1]);
+                jsonObject.accumulate("password", args[2]);
+                jsonObject.accumulate("phone", args[3]);
+
+                JSONObject jsonObject2 = new JSONObject();
+                jsonObject2.accumulate("signup",jsonObject);
+                String param =jsonObject2.toString();
+
+                PrintWriter out = new PrintWriter(con.getOutputStream());
+                out.print("stringified=");
+                out.print(param);
+                out.close();
+
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line).append("\n");
+                    }
+                    bufferedReader.close();
+                    return stringBuilder.toString();
+                }
+                finally{
+                    con.disconnect();
+                }
+            }
+            catch(Exception e) {
+                Log.e("ERROR", e.getMessage(), e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.i("ConnectionPost result",result);
+            try {
+                JSONObject obj = new JSONObject(result);
+
+                if((boolean) obj.get("success"))
+                {
+
+                    listenerSignUp.SignUpComplete(true);
+                }
+                else
+                {
+                    //TODO
+                    listenerSignUp.SignUpComplete(false);
+                }
+
+                Log.d("My App", obj.toString());
+
+            } catch (Throwable t) {
+                Log.e("My App", "Could not parse malformed JSON: \"" + result + "\"");
+                listenerSignUp.SignUpComplete(false);
             }
         }
     }

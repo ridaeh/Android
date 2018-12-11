@@ -1,20 +1,5 @@
 package enib.gala;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.Toast;
-
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
-
 public class User {
     private Integer id;
     private String firstName;

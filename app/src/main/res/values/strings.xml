@@ -226,4 +226,6 @@
     <string name="title_product_selection">Selection</string>
     <string name="title_list_product">List</string>
     <string name="title_scan_and_pay"><![CDATA[Scan&Pay]]></string>
+    <string name="prompt_firstName">First Name</string>
+    <string name="prompt_phoneNumber">Phone Number</string>
 </resources>
