@@ -228,4 +228,6 @@
     <string name="title_scan_and_pay"><![CDATA[Scan&Pay]]></string>
     <string name="prompt_firstName">First Name</string>
     <string name="prompt_phoneNumber">Phone Number</string>
+    <string name="info_no_ticket_found">No ticket found</string>
+    <string name="info_account_balance">Account Balance</string>
 </resources>

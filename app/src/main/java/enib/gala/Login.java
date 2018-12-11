@@ -64,10 +64,10 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = findViewById(R.id.email);
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -96,6 +96,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     @Override
     public void onStart() {
         super.onStart();
+        showProgress(false);
         // Check if user is signed in (non-null) and update UI accordingly.
         mUser = mAuth.getCurrentUser();
         if(mUser!=null)
@@ -225,6 +226,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                     else
                     {
                         Toast.makeText(getApplicationContext(),"error", Toast.LENGTH_LONG).show();
+                        showProgress(false);
                     }
                 }
             });

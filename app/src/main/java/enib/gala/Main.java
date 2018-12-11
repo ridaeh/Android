@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -14,17 +15,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class Main extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private UserAuth mAuth;
     private User mUser;
-    private TextView mTextViewTest;
-    private TextView mTextViewParam;
     private TextView mTextViewUserEmail;
 
-    private ProgressDialog pDialog;
+    private EditText mEditTextAccountBalanceValue;
+    private CardView mCardViewNoTicket;
+    private CardView mcardViewAccountBalance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,32 +54,46 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View headerView = navigationView.getHeaderView(0);
+        mTextViewUserEmail = headerView.findViewById(R.id.textViewUserEmail);
+        mTextViewUserEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(),"Hello "+mUser.getFirstName(), Toast.LENGTH_LONG).show();
+            }
+        });
+
         mAuth = new UserAuth(getApplicationContext());
 
 
-
-
-        mTextViewTest=findViewById(R.id.textViewTest);
-        mTextViewParam = findViewById(R.id.textViewParam);
-        mTextViewUserEmail=findViewById(R.id.textViewUserEmail);
-
-        findViewById(R.id.buttonTest).setOnClickListener(new View.OnClickListener() {
+        //content
+        ImageButton mImageButtonGoToStore=findViewById(R.id.imageButtonGoToStore);
+        mImageButtonGoToStore.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Store.class);
+                startActivity(intent); //TODO : on activity return update
             }
         });
+        mEditTextAccountBalanceValue=findViewById(R.id.editTextAccountBalanceValue);
+        mEditTextAccountBalanceValue.setKeyListener(null);
+        mEditTextAccountBalanceValue.clearFocus();
+        mEditTextAccountBalanceValue.setText("0.0€");
+
+        mCardViewNoTicket=findViewById(R.id.cardViewNoTicket);
+        mcardViewAccountBalance=findViewById(R.id.cardViewCurrentAccountSolde);
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-
+//        Toast.makeText(getApplicationContext(),"onStart", Toast.LENGTH_LONG).show();
         mUser = mAuth.getCurrentUser();
         if(mUser!=null)
         {
-            mTextViewTest.setText(mUser.toString());
+
             mAuth.getAllInfo(mAuth.getCurrentUser()).getAllInfoListener(new UserAuth.GetAllInfoListener() {
                 @Override
                 public void GetAllInfoComplete(User u) {
@@ -86,14 +103,16 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
                         Log.i("getAllInfo getAllInfoListener return", u.toString());
 
                         mUser=u;
-                        mTextViewTest.setText(mUser.toString());
+
+                        mTextViewUserEmail.setText(mUser.getEmail());
                     }
                 }
             });
         }
         else
         {
-            mTextViewTest.setText("no current user");
+            Toast.makeText(getApplicationContext(),"no user found", Toast.LENGTH_LONG).show();
+            Log.i("getCurrentUser : ", "no user found");
             finish();
         }
     }
