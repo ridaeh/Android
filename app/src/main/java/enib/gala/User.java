@@ -8,7 +8,7 @@ public class User {
     private String phone;
     private String phoneIndicative;
     private String city;
-    private Integer postCode;
+    private String postCode;
     private String address;
     private String password;
     private Double balance; //solde
@@ -41,7 +41,7 @@ public class User {
         this.token = token;
     }
 
-    public User(Integer id, String firstName, String lastName, String email, String phone, String phoneIndicative, String city, Integer postCode, String address, String password, Double balance, String token, String admin, Integer permissions) {
+    public User(Integer id, String firstName, String lastName, String email, String phone, String phoneIndicative, String city, String postCode, String address, String password, Double balance, String token, String admin, Integer permissions) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -63,7 +63,7 @@ public class User {
         return false;
     }
 
-    public void update(String firstName, String lastName, String email, String phone, String phoneIndicative, String city, Integer postCode) {
+    public void update(String firstName, String lastName, String email, String phone, String phoneIndicative, String city, String postCode) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -118,7 +118,7 @@ public class User {
         return city;
     }
 
-    public Integer getPostCode() {
+    public String getPostCode() {
         return postCode;
     }
 

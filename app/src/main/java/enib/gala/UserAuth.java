@@ -180,8 +180,20 @@ public class UserAuth {
                 if((boolean) obj.get("success"))
                 {
                     Log.i("getAllInfo onPostExecute", "success");
-//                    Integer postcode =Integer.parseInt((String) obj.get("Postcode"));
-                    listenerGetAllInfo.GetAllInfoComplete(new User(mId,(String) obj.get("Firstname"),(String) obj.get("Lastname"),(String) obj.get("Email"),(String) obj.get("Phone"),(String) obj.get("PhoneIndicative"),(String) obj.get("City"),null,(String) obj.get("Address"),mPassword,null,mToken,null,null));
+                    String sBalance = (String) obj.get("Balance");
+                    Double balance=null;
+                    try
+                    {
+                        balance = Double.parseDouble(sBalance);
+                        balance=balance/100;
+                        Log.i("getAllInfo onPostExecute balance : ", balance.toString());
+                    }
+                    catch (Exception e)
+                    {
+                        Log.e("getAllInfo onPostExecute parseDouble", e.toString());
+                    }
+
+                    listenerGetAllInfo.GetAllInfoComplete(new User(mId,(String) obj.get("Firstname"),(String) obj.get("Lastname"),(String) obj.get("Email"),(String) obj.get("Phone"),(String) obj.get("PhoneIndicative"),(String) obj.get("City"),(String) obj.get("Postcode"),(String) obj.get("Address"),mPassword,balance,mToken,null,null));
 
                 }
                 else

@@ -1,5 +1,6 @@
 package enib.gala;
 
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,7 +28,10 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
 
     private EditText mEditTextAccountBalanceValue;
     private CardView mCardViewNoTicket;
+    private CardView mCardViewTicket;
     private CardView mcardViewAccountBalance;
+
+    static private int request_code_store=12;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,25 +75,41 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         mImageButtonGoToStore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Store.class);
-                startActivity(intent); //TODO : on activity return update
+                Intent i =  new Intent();
+                i.setClass(getApplicationContext(), Store.class);
+                ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(getApplicationContext(),0,0);
+                startActivityForResult(i,request_code_store, activityOptions.toBundle());
+            }
+        });
+
+        ImageButton mImageButtonGetBalanceDetail=findViewById(R.id.imageButtonGetBalanceDetail);
+        mImageButtonGetBalanceDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ShowHistory.class);
+                startActivity(intent);
+
             }
         });
         mEditTextAccountBalanceValue=findViewById(R.id.editTextAccountBalanceValue);
         mEditTextAccountBalanceValue.setKeyListener(null);
         mEditTextAccountBalanceValue.clearFocus();
-        mEditTextAccountBalanceValue.setText("0.0€");
+//        mEditTextAccountBalanceValue.setText("0.0€");
+
 
         mCardViewNoTicket=findViewById(R.id.cardViewNoTicket);
+        mCardViewTicket=findViewById(R.id.cardViewTicket);
+        mCardViewNoTicket.setVisibility(View.GONE);
+        mCardViewTicket.setVisibility(View.VISIBLE);
+
         mcardViewAccountBalance=findViewById(R.id.cardViewCurrentAccountSolde);
 
     }
 
     @Override
     public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
 //        Toast.makeText(getApplicationContext(),"onStart", Toast.LENGTH_LONG).show();
+        super.onStart();
         mUser = mAuth.getCurrentUser();
         if(mUser!=null)
         {
@@ -99,12 +119,9 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
                 public void GetAllInfoComplete(User u) {
                     if (u!=null)
                     {
-//                        Toast.makeText(getApplicationContext(),"success", Toast.LENGTH_LONG).show();
                         Log.i("getAllInfo getAllInfoListener return", u.toString());
-
                         mUser=u;
-
-                        mTextViewUserEmail.setText(mUser.getEmail());
+                        updateView();
                     }
                 }
             });
@@ -113,8 +130,39 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         {
             Toast.makeText(getApplicationContext(),"no user found", Toast.LENGTH_LONG).show();
             Log.i("getCurrentUser : ", "no user found");
+            Intent intent = new Intent(getApplicationContext(), Login.class);
+            startActivity(intent);
             finish();
         }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        Toast.makeText(getApplicationContext(),"onActivityResult", Toast.LENGTH_LONG).show();
+        updateView();
+        if (requestCode == request_code_store) {
+            if (resultCode == RESULT_OK) {
+                //TODO usefull ?
+            }
+        }
+    }
+
+    public void updateView()
+    {
+//        Toast.makeText(getApplicationContext(),"updateView", Toast.LENGTH_LONG).show();
+        mTextViewUserEmail.setText(mUser.getEmail());
+        Double balance = mUser.getBalance();
+        if(balance!=null)
+        {
+            String text = balance.toString()+"€";
+            mEditTextAccountBalanceValue.setText(text);
+        }
+        else
+        {
+            mEditTextAccountBalanceValue.setText("0.0€");
+        }
+        boolean isTicket=false;
+        mCardViewNoTicket.setVisibility(isTicket ? View.GONE : View.VISIBLE);
+        mCardViewTicket.setVisibility(!isTicket ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -136,12 +184,8 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent intent = new Intent(getApplicationContext(), Settings.class);
             startActivity(intent);

@@ -2,6 +2,8 @@ package enib.gala;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +12,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrConfig;
+import com.r0adkll.slidr.model.SlidrListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,4 +59,6 @@ public class ShowHistory extends AppCompatActivity {
             }
         });
     }
+
+
 }

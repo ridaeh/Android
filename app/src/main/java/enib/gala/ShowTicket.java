@@ -3,8 +3,10 @@ package enib.gala;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -21,6 +23,8 @@ import com.google.zxing.common.BitMatrix;
 
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrConfig;
+import com.r0adkll.slidr.model.SlidrListener;
 
 public class ShowTicket extends AppCompatActivity {
 
@@ -34,9 +38,30 @@ public class ShowTicket extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_ticket);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Slidr.attach(this);
+        SlidrConfig config = new SlidrConfig.Builder().listener(new SlidrListener() {
+            @Override
+            public void onSlideStateChanged(int state) {
+
+            }
+
+            @Override
+            public void onSlideChange(float percent) {
+
+            }
+
+            @Override
+            public void onSlideOpened() {
+
+            }
+
+            @Override
+            public void onSlideClosed() {
+                returnData();
+            }
+        }).build();
+        Slidr.attach(this,config);
 //        toolbar
 
         Display display = getWindowManager().getDefaultDisplay();
@@ -89,6 +114,14 @@ public class ShowTicket extends AppCompatActivity {
                 mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             }
         });
+    }
+
+    private void returnData()
+    {
+        Intent data = new Intent();
+        data.setData(Uri.parse("null")); //TODO can be optimized
+        setResult(RESULT_OK, data);
+        finish();
     }
 
     void createQRCode(final String text)

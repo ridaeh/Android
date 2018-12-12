@@ -28,7 +28,6 @@ import java.io.UnsupportedEncodingException;
 
 public class ScanBraceletActivity extends AppCompatActivity { //https://github.com/codexpedia/android_nfc_read_write/
 
-    private Button buttonAction;
     private String braceletValue;
     private NfcAdapter mNfcAdapter;
 
@@ -42,14 +41,7 @@ public class ScanBraceletActivity extends AppCompatActivity { //https://github.c
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_bracelet);
-        buttonAction=findViewById(R.id.button_scan_bracelet_action);
 
-        buttonAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
         SlidrConfig config = new SlidrConfig.Builder()
                                 .position(SlidrPosition.BOTTOM)
 
@@ -70,8 +62,6 @@ public class ScanBraceletActivity extends AppCompatActivity { //https://github.c
 
         if (!mNfcAdapter.isEnabled()) {
             Toast.makeText(this, "NFC is disabled.", Toast.LENGTH_LONG).show();
-        } else {
-//            Toast.makeText(this, "NFC is enable.", Toast.LENGTH_LONG).show();
         }
 
         readFromIntent(getIntent());
@@ -137,18 +127,18 @@ public class ScanBraceletActivity extends AppCompatActivity { //https://github.c
     /******************************************************************************
      **********************************Write to NFC Tag****************************
      ******************************************************************************/
-    private void write(String text, Tag tag) throws IOException, FormatException {
-        NdefRecord[] records = { createRecord(text) };
-        NdefMessage message = new NdefMessage(records);
-        // Get an instance of Ndef for the tag.
-        Ndef ndef = Ndef.get(tag);
-        // Enable I/O
-        ndef.connect();
-        // Write the message
-        ndef.writeNdefMessage(message);
-        // Close the connection
-        ndef.close();
-    }
+//    private void write(String text, Tag tag) throws IOException, FormatException {
+//        NdefRecord[] records = { createRecord(text) };
+//        NdefMessage message = new NdefMessage(records);
+//        // Get an instance of Ndef for the tag.
+//        Ndef ndef = Ndef.get(tag);
+//        // Enable I/O
+//        ndef.connect();
+//        // Write the message
+//        ndef.writeNdefMessage(message);
+//        // Close the connection
+//        ndef.close();
+//    }
     private NdefRecord createRecord(String text) throws UnsupportedEncodingException {
         String lang       = "en";
         byte[] textBytes  = text.getBytes();
