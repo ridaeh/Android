@@ -8,11 +8,35 @@
     android:background="@color/background_material_light"
     tools:context=".Admin_BarMode">
 
+
+    <ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/vf"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <include
+            android:id="@+id/selection"
+            layout="@layout/content_bar_selection" />
+
+        <include
+            android:id="@+id/list"
+            layout="@layout/content_bar_list" />
+
+        <include
+            android:id="@+id/scan_pay"
+            layout="@layout/content_bar_scan_pay" />
+
+    </ViewFlipper>
+
     <TextView
         android:id="@+id/message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="72dp"
         android:text="@string/title_home"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
