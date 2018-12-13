@@ -138,7 +138,7 @@ public class User {
         this.token = token;
     }
 
-    public String getAdmin() {
+    private String getAdmin() {
         return admin;
     }
 
@@ -146,4 +146,11 @@ public class User {
         return permissions;
     }
 
+    public boolean isAdmin()
+    {
+        if (this.getAdmin()==null){return false;}
+        String sAdmin =this.getAdmin();
+        Integer admin = Integer.parseInt(sAdmin);
+        return (admin==1);
+    }
 }

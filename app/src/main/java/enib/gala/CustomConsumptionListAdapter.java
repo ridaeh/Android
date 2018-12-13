@@ -10,13 +10,13 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class CustomListAdapter  extends BaseAdapter {
+public class CustomConsumptionListAdapter  extends BaseAdapter {
 
     private List<Consumption> listData;
     private LayoutInflater layoutInflater;
     private Context context;
 
-    public CustomListAdapter(Context aContext,  List<Consumption> listData) {
+    public CustomConsumptionListAdapter(Context aContext,  List<Consumption> listData) {
         this.context = aContext;
         this.listData = listData;
         layoutInflater = LayoutInflater.from(aContext);

@@ -174,12 +174,12 @@ public class UserAuth {
         protected void onPostExecute(String result) {
             Log.i("ConnectionPostInfo result",result);
             try {
-
                 JSONObject obj = new JSONObject(result);
 //                JSONArray array = new JSONArray(obj);
                 if((boolean) obj.get("success"))
                 {
                     Log.i("getAllInfo onPostExecute", "success");
+                    String sAdmin =null;
                     String sBalance = (String) obj.get("Balance");
                     Double balance=null;
                     try
@@ -193,7 +193,25 @@ public class UserAuth {
                         Log.e("getAllInfo onPostExecute parseDouble", e.toString());
                     }
 
-                    listenerGetAllInfo.GetAllInfoComplete(new User(mId,(String) obj.get("Firstname"),(String) obj.get("Lastname"),(String) obj.get("Email"),(String) obj.get("Phone"),(String) obj.get("PhoneIndicative"),(String) obj.get("City"),(String) obj.get("Postcode"),(String) obj.get("Address"),mPassword,balance,mToken,null,null));
+                    try
+                    {
+                        sAdmin = (String) obj.get("Administrator");
+                        Log.i("getAllInfo onPostExecute balance : ", sAdmin);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.e("getAllInfo onPostExecute getadmin", e.toString());
+                    }
+                    try
+                    {
+                        listenerGetAllInfo.GetAllInfoComplete(new User(mId,(String) obj.get("Firstname"),(String) obj.get("Lastname"),(String) obj.get("Email"),(String) obj.get("Phone"),(String) obj.get("PhoneIndicative"),(String) obj.get("City"),(String) obj.get("Postcode"),(String) obj.get("Address"),mPassword,balance,mToken,sAdmin,null));
+                    }
+                    catch (Exception e)
+                    {
+                        Log.e("getAllInfo onPostExecute return listener", e.toString());
+                    }
+
+
 
                 }
                 else
@@ -205,7 +223,7 @@ public class UserAuth {
                 listenerGetAllInfo.GetAllInfoComplete(null);
 
             } catch (Throwable t) {
-                Log.e("My App", "Could not parse malformed JSON: \"" + result + "\"");
+                Log.e("getAllInfo", "Could not parse malformed JSON: \"" + result + "\"");
                 listenerGetAllInfo.GetAllInfoComplete(null);
 
             }

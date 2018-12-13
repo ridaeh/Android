@@ -68,6 +68,9 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
     int request_code_scan_qrcode=12; //qrcode scanner
     int request_code_scan_bracelet=24; //qrcode scanner
 
+    private UserAuth mAuth;
+    private User mUser;
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -114,6 +117,8 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin__entrance_mode);
 
+        mAuth = new UserAuth(getApplicationContext());
+
         mView=findViewById(R.id.vf);
 
         initView();
@@ -127,8 +132,39 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
         mSwipeRefresh=findViewById(R.id.swipeRefresh);
         mSwipeRefresh.setOnRefreshListener(this);
 
+    }
 
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        mUser = mAuth.getCurrentUser();
+        if(mUser!=null)
+        {
 
+            mAuth.getAllInfo(mAuth.getCurrentUser()).getAllInfoListener(new UserAuth.GetAllInfoListener() {
+                @Override
+                public void GetAllInfoComplete(User u) {
+                    if (u!=null)
+                    {
+                        Log.i("getAllInfo getAllInfoListener return", u.toString());
+                        mUser=u;
+                        if (!u.isAdmin())
+                        {
+                            finish();
+                        }
+                    }
+                }
+            });
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(),"no user found", Toast.LENGTH_LONG).show();
+            Log.i("getCurrentUser : ", "no user found");
+            Intent intent = new Intent(getApplicationContext(), Login.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override

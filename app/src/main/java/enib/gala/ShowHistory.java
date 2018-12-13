@@ -36,7 +36,7 @@ public class ShowHistory extends AppCompatActivity {
         consumptionList.add(new Consumption("vestiaire", -1.0, 2));
         consumptionList.add(new Consumption("preload", 20.0, 2));
 
-        mListViewConso.setAdapter(new CustomListAdapter(this, consumptionList));
+        mListViewConso.setAdapter(new CustomConsumptionListAdapter(this, consumptionList));
 
         mListViewConso.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

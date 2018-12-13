@@ -21,6 +21,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.concurrent.ExecutionException;
+
 public class Main extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private UserAuth mAuth;
     private User mUser;
@@ -29,7 +31,8 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
     private EditText mEditTextAccountBalanceValue;
     private CardView mCardViewNoTicket;
     private CardView mCardViewTicket;
-    private CardView mcardViewAccountBalance;
+    private CardView mCardViewAccountBalance;
+    private MenuItem mMenuViewActionAdmin;
 
     static private int request_code_store=12;
 
@@ -41,6 +44,8 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         setSupportActionBar(toolbar);
 
         toolbar.setTitle("");
+
+
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -102,7 +107,7 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         mCardViewNoTicket.setVisibility(View.GONE);
         mCardViewTicket.setVisibility(View.VISIBLE);
 
-        mcardViewAccountBalance=findViewById(R.id.cardViewCurrentAccountSolde);
+        mCardViewAccountBalance=findViewById(R.id.cardViewCurrentAccountSolde);
 
     }
 
@@ -163,6 +168,15 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         boolean isTicket=false;
         mCardViewNoTicket.setVisibility(isTicket ? View.GONE : View.VISIBLE);
         mCardViewTicket.setVisibility(!isTicket ? View.GONE : View.VISIBLE);
+
+        try
+        {
+            mMenuViewActionAdmin.setVisible(mUser.isAdmin());
+        }
+        catch (Exception e)
+        {
+            Log.e("updateView set visible? admin button", e.toString());
+        }
     }
 
     @Override
@@ -179,6 +193,16 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        try
+        {
+            mMenuViewActionAdmin = menu.findItem(R.id.action_admin);
+        }
+        catch (Exception e)
+        {
+            Log.e("onCreateOptionsMenu set action admin to menu", e.toString());
+        }
+
+
         return true;
     }
 
@@ -201,8 +225,16 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         }
         else if (id == R.id.action_admin)
         {
-            Intent intent = new Intent(getApplicationContext(), Admin_Selection.class);
-            startActivity(intent);
+            if (mUser.isAdmin())
+            {
+                Intent intent = new Intent(getApplicationContext(), Admin_Selection.class);
+                startActivity(intent);
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(),"not allowed", Toast.LENGTH_LONG).show();
+            }
+
             return true;
         }
 

@@ -13,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -46,10 +47,15 @@ public class Admin_RechargeMode extends AppCompatActivity {
 
     private boolean mScanned=false;
 
+    private UserAuth mAuth;
+    private User mUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin__recharge_mode);
+
+        mAuth = new UserAuth(getApplicationContext());
 
         //init view
         Toolbar toolbar = findViewById(R.id.toolbar); setSupportActionBar(toolbar);
@@ -162,6 +168,39 @@ public class Admin_RechargeMode extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        mUser = mAuth.getCurrentUser();
+        if(mUser!=null)
+        {
+
+            mAuth.getAllInfo(mAuth.getCurrentUser()).getAllInfoListener(new UserAuth.GetAllInfoListener() {
+                @Override
+                public void GetAllInfoComplete(User u) {
+                    if (u!=null)
+                    {
+                        Log.i("getAllInfo getAllInfoListener return", u.toString());
+                        mUser=u;
+                        if (!u.isAdmin())
+                        {
+                            finish();
+                        }
+                    }
+                }
+            });
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(),"no user found", Toast.LENGTH_LONG).show();
+            Log.i("getCurrentUser : ", "no user found");
+            Intent intent = new Intent(getApplicationContext(), Login.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
          if (requestCode == request_code_scan_bracelet) {
             if (resultCode == RESULT_OK) {
@@ -212,7 +251,7 @@ public class Admin_RechargeMode extends AppCompatActivity {
                 consumptionList.add(new Consumption("vestiaire", -1.0, 2));
                 consumptionList.add(new Consumption("preload", 20.0, 2));
 
-                mListViewConso.setAdapter(new CustomListAdapter(this, consumptionList));
+                mListViewConso.setAdapter(new CustomConsumptionListAdapter(this, consumptionList));
 
                 mListViewConso.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
