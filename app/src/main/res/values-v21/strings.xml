@@ -20,4 +20,6 @@
     <string name="prompt_phoneNumber">Phone Number</string>
     <string name="info_no_ticket_found">No ticket found</string>
     <string name="info_account_balance">Account Balance</string>
+    <string name="text_total">Total</string>
+    <string name="button_pay">Pay</string>
 </resources>

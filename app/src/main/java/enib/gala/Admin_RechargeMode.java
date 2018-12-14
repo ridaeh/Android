@@ -50,6 +50,8 @@ public class Admin_RechargeMode extends AppCompatActivity {
     private UserAuth mAuth;
     private User mUser;
 
+    private Integer mScanBraceletUserId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,6 +145,7 @@ public class Admin_RechargeMode extends AppCompatActivity {
             public void onClick(View view) { //cancel
                 enableRecharge(false);
                 mScanned=false;
+                mScanBraceletUserId=null;
                 //TODO
             }
         });
@@ -224,9 +227,27 @@ public class Admin_RechargeMode extends AppCompatActivity {
     private void afterBraceletCodeReturn(String result)
     {
         //TODO
-        mScanned=true;
-        enableRecharge(true);
-        setSolde(0.0);
+        Bracelet b = new Bracelet();
+        b.scanBracelet(result).setSignInCompleteListener(
+                new Bracelet.BraceletScanCompleteListener() {
+                    @Override
+                    public void BraceletScanComplete(boolean success, String text, Double solde,Integer id) {
+                        mScanned=success;
+                        enableRecharge(success);
+                        mScanBraceletUserId=id;
+                        if (success)
+                        {
+                            setSolde(solde);
+
+                        }
+                        else
+                        {
+                            Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+        );
+
     }
 
     private void setSolde(Double solde)
@@ -237,8 +258,6 @@ public class Admin_RechargeMode extends AppCompatActivity {
 
     private void enableList(boolean enable)
     {
-
-
         if(enable)
         {
             if(mScanned)
@@ -259,7 +278,7 @@ public class Admin_RechargeMode extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> a, View v, int position, long id) {
                         Object o = mListViewConso.getItemAtPosition(position);
                         Consumption c = (Consumption) o;
-                        Toast.makeText(getApplicationContext(), "Selected :" + " " + c, Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getApplicationContext(), "Selected :" + " " + c, Toast.LENGTH_LONG).show();
 
                         AlertDialog alertDialog = new AlertDialog.Builder(Admin_RechargeMode.this).create();
                         alertDialog.setTitle("Info");
@@ -291,7 +310,6 @@ public class Admin_RechargeMode extends AppCompatActivity {
 
     private void enableAdd(boolean enable)
     {
-
         if(enable)
         {
             if(mScanned)
@@ -304,14 +322,11 @@ public class Admin_RechargeMode extends AppCompatActivity {
             {
                 Toast.makeText(getApplicationContext(),"Please Scan Fist", Toast.LENGTH_LONG).show();
             }
-
         }
         else
         {
             mCardViewAddSolde.setVisibility(View.GONE);
         }
-
-
     }
 
 

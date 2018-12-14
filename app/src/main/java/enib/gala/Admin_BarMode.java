@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -50,6 +51,15 @@ public class Admin_BarMode extends AppCompatActivity {
 
     private List<Product> productsList = new ArrayList<>();
 
+    private EditText mEditTextTotalValue;
+    private EditText mEditTextScanPayTotalValue;
+
+    private Button mButtonScan;
+    private Button mButtonPay;
+
+    private Integer mScanBraceletUserId=null;
+
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -64,33 +74,11 @@ public class Admin_BarMode extends AppCompatActivity {
                     toolbar.setTitle(getString(R.string.title_list_product));
                     mView.setDisplayedChild(1);
 
-                    mListViewSelectedConso.setAdapter(new CustomProductListAdapter(getApplicationContext(),productsList));
-                    mListViewSelectedConso.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                        @Override
-                        public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                            Object o = mListViewSelectedConso.getItemAtPosition(position);
-                            Product c = (Product) o;
-                            AlertDialog alertDialog = new AlertDialog.Builder(Admin_BarMode.this).create();
-                            alertDialog.setTitle("Info");
-                            alertDialog.setMessage(c.toString());
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            alertDialog.show();
-                        }
-                    });
+                    updateList();
                     return true;
                 case R.id.navigation_scan_and_pay:
                     toolbar.setTitle(getString(R.string.title_scan_and_pay));
                     mView.setDisplayedChild(2);
-                    Intent i =  new Intent();
-                    i.setClass(getApplicationContext(), ScanBraceletActivity.class);
-                    ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(getApplicationContext(),0,0);
-                    startActivityForResult(i,request_code_scan_bracelet, activityOptions.toBundle());
                     return true;
             }
             return false;
@@ -115,8 +103,71 @@ public class Admin_BarMode extends AppCompatActivity {
         mView=findViewById(R.id.vf);
         mLinearLayoutProducts=findViewById(R.id.linearLayoutProducts);
         mListViewSelectedConso=findViewById(R.id.listViewSelectedConso);
+        mListViewSelectedConso.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+            @Override
+            public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+                Toast.makeText(getApplicationContext(),"onItemClick", Toast.LENGTH_LONG).show();
+                Object o = mListViewSelectedConso.getItemAtPosition(position);
+                final Product c = (Product) o;
+                AlertDialog alertDialog = new AlertDialog.Builder(Admin_BarMode.this).create();
+                alertDialog.setTitle(c.getName());
+                alertDialog.setMessage(c.toString());
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "DELETE",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                productsList.remove(c);
+                                dialog.dismiss();
+                                updateList();
+                            }
+                        });
+                alertDialog.show();
+            }
+        });
 
+        mEditTextTotalValue=findViewById(R.id.editTextTotalValue);
+        mEditTextTotalValue.setKeyListener(null);
+
+        mEditTextScanPayTotalValue=findViewById(R.id.editTextScanPayTotalValue);
+        mEditTextScanPayTotalValue.setKeyListener(null);
+
+        mButtonScan=findViewById(R.id.buttonScan);
+        mButtonScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i =  new Intent();
+                i.setClass(getApplicationContext(), ScanBraceletActivity.class);
+                ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(getApplicationContext(),0,0);
+                startActivityForResult(i,request_code_scan_bracelet, activityOptions.toBundle());
+            }
+        });
+        mButtonPay=findViewById(R.id.buttonPay);
+        mButtonPay.setEnabled(false);
+        mButtonPay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO
+                Log.i("mButtonPay", "setOnClickListener");
+                Pay p = new Pay();
+                p.paymentListProduct(productsList,mUser.getToken(),mScanBraceletUserId).setPayementDoneCompleteListener(new Pay.PaymentDoneCompleteListener() {
+                    @Override
+                    public void PaymentDoneComplete(boolean success, String text) {
+                        Toast.makeText(getApplicationContext(),text, Toast.LENGTH_LONG).show();
+                        if(success)
+                        {
+                            mButtonPay.setEnabled(false);
+                            productsList.clear();
+                        }
+                    }
+                });
+            }
+        });
 
         new Consommation().execute();
     }
@@ -128,7 +179,6 @@ public class Admin_BarMode extends AppCompatActivity {
         mUser = mAuth.getCurrentUser();
         if(mUser!=null)
         {
-
             mAuth.getAllInfo(mAuth.getCurrentUser()).getAllInfoListener(new UserAuth.GetAllInfoListener() {
                 @Override
                 public void GetAllInfoComplete(User u) {
@@ -170,9 +220,63 @@ public class Admin_BarMode extends AppCompatActivity {
         }
     }
 
+    public void updateList()
+    {
+        mListViewSelectedConso.setAdapter(new CustomProductListAdapter(getApplicationContext(),productsList));
+        String text = getTotalValue().toString()+"€";
+        mEditTextTotalValue.setText(text);
+        mEditTextScanPayTotalValue.setText(text);
+        mButtonPay.setEnabled(false);
+    }
+
     public void afterBraceletCodeReturn(String code)
     {
+        if (!code.isEmpty())
+        {
+            Bracelet b = new Bracelet();
+            b.scanBracelet(code).setSignInCompleteListener(
+                    new Bracelet.BraceletScanCompleteListener() {
+                        @Override
+                        public void BraceletScanComplete(boolean success, String text, Double solde,Integer id) {
+                            if (success)
+                            {
+                                if (getTotalValue()<solde)
+                                {
+                                    mButtonPay.setEnabled(true);
+                                    Toast.makeText(getApplicationContext(),text, Toast.LENGTH_LONG).show();
+                                    mScanBraceletUserId=id;
+                                }
+                                else
+                                {
+                                    mButtonPay.setEnabled(false);
+                                    Toast.makeText(getApplicationContext(),"warning insufficient balance", Toast.LENGTH_LONG).show();
+                                    mScanBraceletUserId=null;
+                                    //TODO alert solde
+                                }
+                            }
+                            else
+                            {
+                                mButtonPay.setEnabled(false);
+                                Toast.makeText(getApplicationContext(),text, Toast.LENGTH_LONG).show();
+                                mScanBraceletUserId=null;
+                            }
+                        }
+                    }
+            );
+        }
         //TODO : get info about the user and if the balance is good
+    }
+
+    public Double getTotalValue()
+    {
+        Double totalValue=0.0;
+        for (int i=0; i<productsList.size(); i++)
+        {
+            Product p =productsList.get(i);
+            totalValue += p.getCount()*p.getPrice();
+        }
+        //TODO get from list
+        return totalValue;
     }
 
     public class Consommation extends AsyncTask<String, Void, String> {
@@ -260,7 +364,19 @@ public class Admin_BarMode extends AppCompatActivity {
                                         @Override
                                         public void onClick(View v) {
                                             //TODO add to list
+                                            for (int i=0; i<productsList.size(); i++)
+                                            {
+                                                Product p2 =productsList.get(i);
+                                                int i1=p.getId();
+                                                int i2=p2.getId();
+                                                if(i1==i2)
+                                                {
+                                                    productsList.get(i).addOneCount();
+                                                    return;
+                                                }
+                                            }
                                             productsList.add(p);
+
                                         }
                                     });
                                     b.setOnLongClickListener(new View.OnLongClickListener() {

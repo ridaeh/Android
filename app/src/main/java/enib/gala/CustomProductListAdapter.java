@@ -2,10 +2,13 @@ package enib.gala;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.media.Image;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.List;
@@ -39,31 +42,33 @@ public class CustomProductListAdapter  extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
+
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.list_item_layout, null);
+            convertView = layoutInflater.inflate(R.layout.list_product_layout, null);
             holder = new ViewHolder();
-            holder.ConsumptionNameView =  convertView.findViewById(R.id.textView_consumption);
-            holder.PriceView = convertView.findViewById(R.id.textView_price);
+            holder.ProductNameView =  convertView.findViewById(R.id.textViewProductName);
+            holder.PriceView = convertView.findViewById(R.id.textViewPrice);
+            holder.CountView = convertView.findViewById(R.id.textViewCount);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        Product Product = this.listData.get(position);
-        holder.ConsumptionNameView.setText(Product.getName());
+        final Product Product = this.listData.get(position);
+        holder.ProductNameView.setText(Product.getName());
         String price =Product.getPrice().toString()+"€";
         holder.PriceView.setText(price);
-        holder.PriceView.setTextColor(Product.getPrice()>=0 ? Color.GREEN : Color.RED);
-
+        holder.PriceView.setTextColor(Color.GREEN);
+        String text="x"+Product.getCount().toString();
+        holder.CountView.setText(text);
 
         return convertView;
     }
 
-
     static class ViewHolder {
-
-        TextView ConsumptionNameView;
+        TextView ProductNameView;
         TextView PriceView;
+        TextView CountView;
     }
 
 }

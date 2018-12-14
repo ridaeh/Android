@@ -7,6 +7,7 @@ public class Product {
     private Integer size;
     private String sizeUnit;
     private boolean available;
+    private Integer count;
 
     public Product(Integer id, Double price, String name, Integer size, String sizeUnit, boolean available) {
         this.id = id;
@@ -15,6 +16,7 @@ public class Product {
         this.size = size;
         this.sizeUnit = sizeUnit;
         this.available = available;
+        this.count = 1;
     }
 
     public Integer getId() {
@@ -52,4 +54,23 @@ public class Product {
                 ", available=" + available +
                 '}';
     }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public void removeOneCount()
+    {
+        this.count --;
+    }
+
+    public void addOneCount()
+    {
+        this.count ++;
+    }
+
 }
