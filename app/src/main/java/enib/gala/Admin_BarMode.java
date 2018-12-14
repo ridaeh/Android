@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
@@ -107,7 +106,7 @@ public class Admin_BarMode extends AppCompatActivity {
 
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                Toast.makeText(getApplicationContext(),"onItemClick", Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(),"onItemClick", Toast.LENGTH_LONG).show();
                 Object o = mListViewSelectedConso.getItemAtPosition(position);
                 final Product c = (Product) o;
                 AlertDialog alertDialog = new AlertDialog.Builder(Admin_BarMode.this).create();

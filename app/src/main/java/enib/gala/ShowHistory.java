@@ -3,38 +3,34 @@ package enib.gala;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.r0adkll.slidr.Slidr;
-import com.r0adkll.slidr.model.SlidrConfig;
-import com.r0adkll.slidr.model.SlidrListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShowHistory extends AppCompatActivity {
     private ListView mListViewConso;
+    private UserAuth mAuth;
+    private User mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_history);
+        mAuth = new UserAuth(getApplicationContext());
         Slidr.attach(this);
         mListViewConso=findViewById(R.id.listViewConso);
 
         List<Consumption> consumptionList = new ArrayList<>();
-        consumptionList.add(new Consumption("ecocup", -1.0, 1));
-        consumptionList.add(new Consumption("bouteille champagne", -22.0, 2));
-        consumptionList.add(new Consumption("metre biere", -12.0, 2013,1,null,null,5.5));
-        consumptionList.add(new Consumption("cb", 20.0, 2));
-        consumptionList.add(new Consumption("vestiaire", -1.0, 2));
-        consumptionList.add(new Consumption("preload", 20.0, 2));
+
 
         mListViewConso.setAdapter(new CustomConsumptionListAdapter(this, consumptionList));
 
@@ -59,6 +55,45 @@ public class ShowHistory extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mUser = mAuth.getCurrentUser();
+        if (mUser != null) {
+            mAuth.getAllInfo(mAuth.getCurrentUser()).getAllInfoListener(new UserAuth.GetAllInfoListener() {
+                @Override
+                public void GetAllInfoComplete(User u) {
+                    if (u != null) {
+                        Log.i("getAllInfo getAllInfoListener return", u.toString());
+                        mUser = u;
+                        if (!u.isAdmin()) {
+                            finish();
+                        }
+                    }
+                }
+            });
+        } else {
+            Toast.makeText(getApplicationContext(), "no user found", Toast.LENGTH_LONG).show();
+            Log.i("getCurrentUser : ", "no user found");
+            Intent intent = new Intent(getApplicationContext(), Login.class);
+            startActivity(intent);
+            finish();
+        }
+
+        Historical h = new Historical();
+        h.getHistorical(mUser.getId()).setGetHistoricalCompleteListener(new Historical.GetHistoricalCompleteListener() {
+            @Override
+            public void GetHistoricalComplete(boolean success, String text, List<Consumption> consumptionList) {
+                if (success) {
+                    mListViewConso.setAdapter(new CustomConsumptionListAdapter(getApplicationContext(), consumptionList));
+                } else {
+                    Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
 
 
 }

@@ -1,7 +1,5 @@
 package enib.gala;
 
-import android.support.annotation.NonNull;
-
 public class Consumption { //https://o7planning.org/en/10435/android-listview-tutorial#a1453256
     //class consommation
     private String name;
@@ -11,6 +9,7 @@ public class Consumption { //https://o7planning.org/en/10435/android-listview-tu
     private String allergen=null;
     private String category=null;
     private Double degreesOfAlcohol=null;
+    private String dateTime = null;
 
     public Consumption(String name, Double price, Integer id, Integer amount, String allergen, String category, Double degreesOfAlcohol) {
         this.name = name;
@@ -20,6 +19,17 @@ public class Consumption { //https://o7planning.org/en/10435/android-listview-tu
         this.allergen = allergen;
         this.category = category;
         this.degreesOfAlcohol = degreesOfAlcohol;
+    }
+
+    public Consumption(String name, Double price, Integer id, Integer amount, String allergen, String category, Double degreesOfAlcohol, String dateTime) {
+        this.name = name;
+        this.price = price;
+        this.id = id;
+        this.amount = amount;
+        this.allergen = allergen;
+        this.category = category;
+        this.degreesOfAlcohol = degreesOfAlcohol;
+        this.dateTime = dateTime;
     }
 
     public Double getDegreesOfAlcohol() {
@@ -112,7 +122,7 @@ public class Consumption { //https://o7planning.org/en/10435/android-listview-tu
         }
         if (allergen!=null)
         {
-            txt+=allergen.toString();
+            txt += allergen;
             txt+="°\n";
         }
         if(amount>1)
@@ -120,6 +130,9 @@ public class Consumption { //https://o7planning.org/en/10435/android-listview-tu
             txt+="amount : "+amount.toString();
             txt+="\n";
         }
+        txt += "DateTime : " + dateTime;
+        txt += "\n";
+
 
         return txt;
     }

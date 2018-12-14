@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import com.r0adkll.slidr.Slidr;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Admin_RechargeMode extends AppCompatActivity {
@@ -262,23 +261,23 @@ public class Admin_RechargeMode extends AppCompatActivity {
         {
             if(mScanned)
             {
-                List<Consumption> consumptionList = new ArrayList<>();
-                consumptionList.add(new Consumption("ecocup", -1.0, 1));
-                consumptionList.add(new Consumption("bouteille champagne", -22.0, 2));
-                consumptionList.add(new Consumption("metre biere", -12.0, 2013,1,null,null,5.5));
-                consumptionList.add(new Consumption("cb", 20.0, 2));
-                consumptionList.add(new Consumption("vestiaire", -1.0, 2));
-                consumptionList.add(new Consumption("preload", 20.0, 2));
-
-                mListViewConso.setAdapter(new CustomConsumptionListAdapter(this, consumptionList));
-
+                Historical h = new Historical();
+                h.getHistorical(mScanBraceletUserId).setGetHistoricalCompleteListener(new Historical.GetHistoricalCompleteListener() {
+                    @Override
+                    public void GetHistoricalComplete(boolean success, String text, List<Consumption> consumptionList) {
+                        if (success) {
+                            mListViewConso.setAdapter(new CustomConsumptionListAdapter(getApplicationContext(), consumptionList));
+                        } else {
+                            Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
                 mListViewConso.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                     @Override
                     public void onItemClick(AdapterView<?> a, View v, int position, long id) {
                         Object o = mListViewConso.getItemAtPosition(position);
                         Consumption c = (Consumption) o;
-//                        Toast.makeText(getApplicationContext(), "Selected :" + " " + c, Toast.LENGTH_LONG).show();
 
                         AlertDialog alertDialog = new AlertDialog.Builder(Admin_RechargeMode.this).create();
                         alertDialog.setTitle("Info");
