@@ -1,15 +1,14 @@
 package enib.gala;
 
 public class Product {
-    //{"Id":"1","Price":"250","Name":"Coca Cola","Size":"33","SizeUnit":"cl","Available":"1"}
     private Integer id;
-    private Integer price;
+    private Double price;
     private String name;
     private Integer size;
     private String sizeUnit;
     private boolean available;
 
-    public Product(Integer id, Integer price, String name, Integer size, String sizeUnit, boolean available) {
+    public Product(Integer id, Double price, String name, Integer size, String sizeUnit, boolean available) {
         this.id = id;
         this.price = price;
         this.name = name;
@@ -22,7 +21,7 @@ public class Product {
         return id;
     }
 
-    public Integer getPrice() {
+    public Double getPrice() {
         return price;
     }
 

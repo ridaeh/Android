@@ -15,8 +15,6 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class UserAuth {
     private MyDBHandler db;
-    private static final String API_URL = "https://api.leeap.cash/";
-
 
     private SignInCompleteListener listenerSignIn;
     private SignUpCompleteListener listenerSignUp;
@@ -129,7 +127,7 @@ public class UserAuth {
         protected String doInBackground(String... args) {
 
             try {
-                URL url = new URL(API_URL); // here is your URL path
+                URL url = new URL(Data.getApiUrl()); // here is your URL path
                 HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
                 con.setReadTimeout(7000);
                 con.setConnectTimeout(7000);
@@ -241,7 +239,7 @@ public class UserAuth {
         protected String doInBackground(String... args) {
 
             try {
-                URL url = new URL(API_URL); // here is your URL path
+                URL url = new URL(Data.getApiUrl()); // here is your URL path
                 HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
                 con.setReadTimeout(7000);
                 con.setConnectTimeout(7000);
@@ -326,7 +324,7 @@ public class UserAuth {
         protected String doInBackground(String... args) {
 
             try {
-                URL url = new URL(API_URL); // here is your URL path
+                URL url = new URL(Data.getApiUrl()); // here is your URL path
                 HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
                 con.setReadTimeout(7000);
                 con.setConnectTimeout(7000);

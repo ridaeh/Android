@@ -30,7 +30,6 @@ public class ScanBraceletActivity extends AppCompatActivity { //https://github.c
 
     private String braceletValue;
     private NfcAdapter mNfcAdapter;
-
     boolean writeMode;
     PendingIntent pendingIntent;
     IntentFilter writeTagFilters[];
@@ -70,6 +69,14 @@ public class ScanBraceletActivity extends AppCompatActivity { //https://github.c
         IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
         tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
         writeTagFilters = new IntentFilter[] { tagDetected };
+
+        Button mButton= findViewById(R.id.button_scan_bracelet_action);
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void returnData()
