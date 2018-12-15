@@ -9,10 +9,12 @@
         <menu>
             <item
                 android:id="@+id/nav_store"
+                android:enabled="false"
                 android:icon="@drawable/ic_shopping_cart_grey_24dp"
                 android:title="@string/nav_store_name" />
             <item
                 android:id="@+id/nav_ticket"
+                android:enabled="false"
                 android:icon="@drawable/ic_local_activity_grey_24dp"
                 android:title="@string/nav_ticket_name" />
             <item

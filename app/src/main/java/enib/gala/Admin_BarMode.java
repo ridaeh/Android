@@ -151,13 +151,12 @@ public class Admin_BarMode extends AppCompatActivity {
         mButtonPay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
                 Log.i("mButtonPay", "setOnClickListener");
                 Pay p = new Pay();
                 p.paymentListProduct(productsList,mUser.getToken(),mScanBraceletUserId).setPayementDoneCompleteListener(new Pay.PaymentDoneCompleteListener() {
                     @Override
                     public void PaymentDoneComplete(boolean success, String text) {
-                        Toast.makeText(getApplicationContext(),text, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show(); //TODO do smth different
                         if(success)
                         {
                             mButtonPay.setEnabled(false);
@@ -263,7 +262,6 @@ public class Admin_BarMode extends AppCompatActivity {
                     }
             );
         }
-        //TODO : get info about the user and if the balance is good
     }
 
     public Double getTotalValue()
@@ -274,7 +272,6 @@ public class Admin_BarMode extends AppCompatActivity {
             Product p =productsList.get(i);
             totalValue += p.getCount()*p.getPrice();
         }
-        //TODO get from list
         return totalValue;
     }
 
@@ -362,7 +359,6 @@ public class Admin_BarMode extends AppCompatActivity {
                                     b.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            //TODO add to list
                                             for (int i=0; i<productsList.size(); i++)
                                             {
                                                 Product p2 =productsList.get(i);

@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -102,7 +101,7 @@ public class Pay {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.accumulate("userId", userId);
                 jsonObject.accumulate("token", token);
-                jsonObject.put("conso",(Object) data);
+                jsonObject.put("conso", data);
 
                 JSONObject jsonObject2 = new JSONObject();
                 jsonObject2.accumulate("pay",jsonObject);
@@ -146,19 +145,11 @@ public class Pay {
                 try
                 {
                     success=(boolean) obj.get("success");
-                    if(success)
-                    {
-
-                        listenerPaymentDone.PaymentDoneComplete(true,(String) obj.get("text"));
-                    }
-                    else
-                    {
-                        listenerPaymentDone.PaymentDoneComplete(false,(String) obj.get("text"));
-                    }
+                    listenerPaymentDone.PaymentDoneComplete(success, (String) obj.get("text"));
                 }
                 catch(Exception e) {
                     Log.e("ERROR", e.getMessage(), e);
-                    listenerPaymentDone.PaymentDoneComplete(false,"return error");
+                    listenerPaymentDone.PaymentDoneComplete(success, "return error");
                 }
 
 

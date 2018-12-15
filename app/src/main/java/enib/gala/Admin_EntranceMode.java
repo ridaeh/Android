@@ -8,9 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -55,8 +53,8 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
     private TextView mTextViewPlaceInfo;
 
     private Button mButtonBind;
-    private String mQRCodeValue=null;;
-    private String mBraceletValue=null;;
+    private String mQRCodeValue = null;
+    private String mBraceletValue = null;
 
     private ProgressDialog pDialog;
 
@@ -226,14 +224,22 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == request_code_scan_qrcode) {
             if (resultCode == RESULT_OK) {
-                afterQRCodeReturn(data.getData().toString());
-                //TODO
+                try {
+                    afterQRCodeReturn(data.getData().toString());
+                } catch (Exception e) {
+                    Log.e("onActivityResult", e.getMessage(), e);
+                }
+
             }
         }
         else if (requestCode == request_code_scan_bracelet) {
             if (resultCode == RESULT_OK) {
-                afterBraceletCodeReturn(data.getData().toString());
-                //TODO
+                try {
+                    afterBraceletCodeReturn(data.getData().toString());
+                } catch (Exception e) {
+                    Log.e("onActivityResult", e.getMessage(), e);
+                }
+
             }
         }
     }
@@ -244,7 +250,7 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
 
         if(result.isEmpty())
         {
-            //TODO
+            Toast.makeText(this, "Nothing detected", Toast.LENGTH_SHORT).show();
             mBraceletValue=null;
             mBraceletWorks=false;
 
@@ -266,7 +272,7 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
         {
             mQRCodeValue=null;
             placeValid(false);
-            //TODO add warning
+            Toast.makeText(this, "Nothing detected", Toast.LENGTH_SHORT).show();
             mPlaceWorks=false;
         }
         else
@@ -285,11 +291,12 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
         }
         else
         {
-            //TODO : add warning
+            Toast.makeText(this, "This ticket got problem", Toast.LENGTH_SHORT).show();
             mCardViewPlace.setCardBackgroundColor(Color.RED);
         }
     }
-    private void braceletValid(boolean isValid) //TODO
+
+    private void braceletValid(boolean isValid)
     {
         if(isValid)
         {
@@ -297,7 +304,7 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
         }
         else
         {
-            //TODO : add warning
+            Toast.makeText(this, "This ticket got problem", Toast.LENGTH_SHORT).show();
             mCardViewInfo.setCardBackgroundColor(Color.RED);
         }
     }
@@ -381,33 +388,60 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
             try {
 
                 JSONObject obj = new JSONObject(result);
-//                JSONArray array = new JSONArray(obj);
                 if((boolean) obj.get("success"))
                 {
-                    mPlaceWorks=true; //TODO after debug set false if already used
-                    String used=(String) obj.get("Used");
-                    setPlaceCardInfo((String) obj.get("QRCode"),(String) obj.get("Email"),(String) obj.get("Name"),(String) obj.get("Firstname"),0.0); //TODO account balance
-                    if (used=="0")
+                    mPlaceWorks = true;
+                    String sUsed = null;
+                    Integer used = null;
+                    String sBalance = null;
+                    Double balance = null;
+
+                    try {
+                        sUsed = (String) obj.get("Used");
+                        used = Integer.parseInt(sUsed);
+                        sBalance = (String) obj.get("Balance");
+                        balance = Double.parseDouble(sBalance) / 100;
+//                        Log.i("used",used.toString());
+                    } catch (Exception e) {
+                        Log.e("ERROR", e.getMessage(), e);
+                    }
+
+                    try {
+                        setPlaceCardInfo((String) obj.get("QRCode"), (String) obj.get("Email"), (String) obj.get("Name"), (String) obj.get("Firstname"), balance);
+                    } catch (Exception e) {
+                        Log.e("ERROR", e.getMessage(), e);
+                    }
+
+
+                    boolean valid = false;
+
+                    try {
+                        valid = (used == 0);
+                    } catch (Exception e) {
+                        Log.e("ERROR", e.getMessage(), e);
+                    }
+                    Log.i("valid", valid ? "true" : "false");
+
+                    Toast.makeText(getApplicationContext(), valid ? "unused ticket" : "this ticket is already used", Toast.LENGTH_LONG).show();
+
+                    placeValid(valid);
+                    mPlaceWorks = valid;
+                    if (valid)
                     {
                         //unused ticket
-                        Toast.makeText(getApplicationContext(),"success", Toast.LENGTH_LONG).show();
-                        placeValid(true);
                     }
                     else
                     {
                         //already used ticket
-                        Toast.makeText(getApplicationContext(),"already used", Toast.LENGTH_LONG).show();
-                        placeValid(false);
+                        mPlaceWorks = false;
+                        //TODO : implement force set
                     }
-
-
-
-
                 }
                 else
                 {
                     mPlaceWorks=false;
                     placeValid(false);
+                    setPlaceCardInfo(mQRCodeValue, null, null, null, null);
                     Toast.makeText(getApplicationContext(),"problem", Toast.LENGTH_LONG).show();
                 }
 

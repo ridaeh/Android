@@ -145,7 +145,6 @@ public class Admin_RechargeMode extends AppCompatActivity {
                 enableRecharge(false);
                 mScanned=false;
                 mScanBraceletUserId=null;
-                //TODO
             }
         });
 
@@ -155,7 +154,6 @@ public class Admin_RechargeMode extends AppCompatActivity {
             public void onClick(View view) { //list
                 enableAdd(false);
                 enableList(true);
-                //TODO
             }
         });
 
@@ -165,7 +163,6 @@ public class Admin_RechargeMode extends AppCompatActivity {
             public void onClick(View view) { //add
                 enableList(false);
                 enableAdd(true);
-                //TODO
             }
         });
     }
@@ -213,19 +210,14 @@ public class Admin_RechargeMode extends AppCompatActivity {
                 }
                 catch (NullPointerException e)
                 {
-                    //TODO
-                    e.getMessage();
+                    Log.e("onActivityResult", e.getMessage(), e);
                 }
-
-
-                //TODO
             }
         }
     }
 
     private void afterBraceletCodeReturn(String result)
     {
-        //TODO
         Bracelet b = new Bracelet();
         b.scanBracelet(result).setSignInCompleteListener(
                 new Bracelet.BraceletScanCompleteListener() {
