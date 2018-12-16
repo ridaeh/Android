@@ -15,3 +15,7 @@ L'utilisateur administrateur peut s'occuper des entrées, du bar, et le recharge
 
 Pour l'utilisateur administrateur, la fin du rechargement.
 Pour l'utilisateur, consulter sa place, et la partie paiement in-app.
+
+## Comment compiler
+
+Il suffit d'ajouter une classe Data, avec une fonction getApiUrl() qui retourne l'URL de l'api, de lancer Android studio et de mettre à jour les bibliothèques.
