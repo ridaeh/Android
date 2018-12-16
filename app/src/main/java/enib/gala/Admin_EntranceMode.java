@@ -384,7 +384,7 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
 
         @Override
         protected void onPostExecute(String result) {
-            mTextViewPlaceInfo.setText(result);
+//            mTextViewPlaceInfo.setText(result);
             try {
 
                 JSONObject obj = new JSONObject(result);
