@@ -77,10 +77,10 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         mImageButtonGoToStore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i =  new Intent();
-                i.setClass(getApplicationContext(), Store.class);
-                ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(getApplicationContext(),0,0);
-                startActivityForResult(i,request_code_store, activityOptions.toBundle());
+//                Intent i =  new Intent();
+//                i.setClass(getApplicationContext(), Store.class);
+//                ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(getApplicationContext(),0,0);
+//                startActivityForResult(i,request_code_store, activityOptions.toBundle());
             }
         });
 
