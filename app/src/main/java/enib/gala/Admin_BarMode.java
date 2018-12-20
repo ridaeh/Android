@@ -78,6 +78,7 @@ public class Admin_BarMode extends AppCompatActivity {
                 case R.id.navigation_scan_and_pay:
                     toolbar.setTitle(getString(R.string.title_scan_and_pay));
                     mView.setDisplayedChild(2);
+                    updateList();
                     return true;
             }
             return false;

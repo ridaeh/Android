@@ -1,12 +1,12 @@
 package enib.gala;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -20,7 +20,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Main extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class Main extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
     private UserAuth mAuth;
     private User mUser;
     private TextView mTextViewUserEmail;
@@ -33,6 +33,8 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
 
     static private int request_code_store=12;
 
+    private SwipeRefreshLayout mSwipeRefresh;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +43,6 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         setSupportActionBar(toolbar);
 
         toolbar.setTitle("");
-
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -84,6 +85,17 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
             }
         });
 
+        ImageButton mImageButtonGoToTicket = findViewById(R.id.imageButtonGoToTicket);
+        mImageButtonGoToTicket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent i =  new Intent();
+//                i.setClass(getApplicationContext(), ShowTicket.class);
+//                ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(getApplicationContext(),0,0);
+//                startActivityForResult(i,request_code_store, activityOptions.toBundle());
+            }
+        });
+
         ImageButton mImageButtonGetBalanceDetail=findViewById(R.id.imageButtonGetBalanceDetail);
         mImageButtonGetBalanceDetail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,10 +114,30 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         mCardViewNoTicket=findViewById(R.id.cardViewNoTicket);
         mCardViewTicket=findViewById(R.id.cardViewTicket);
         mCardViewNoTicket.setVisibility(View.GONE);
-        mCardViewTicket.setVisibility(View.VISIBLE);
+        mCardViewTicket.setVisibility(View.GONE);
 
         mCardViewAccountBalance=findViewById(R.id.cardViewCurrentAccountSolde);
 
+        //swipe refresh
+        mSwipeRefresh = findViewById(R.id.swipeRefresh);
+        mSwipeRefresh.setOnRefreshListener(this);
+
+    }
+
+    @Override
+    public void onRefresh() {
+        Toast.makeText(this, "Refresh", Toast.LENGTH_SHORT).show();
+        mAuth.getAllInfo(mAuth.getCurrentUser()).getAllInfoListener(new UserAuth.GetAllInfoListener() {
+            @Override
+            public void GetAllInfoComplete(User u) {
+                if (u != null) {
+                    Log.i("getAllInfo getAllInfoListener return", u.toString());
+                    mUser = u;
+                    updateView();
+                    mSwipeRefresh.setRefreshing(false);
+                }
+            }
+        });
     }
 
     @Override
