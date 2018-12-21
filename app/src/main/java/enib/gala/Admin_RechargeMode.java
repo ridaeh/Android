@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -15,6 +16,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -99,7 +101,7 @@ public class Admin_RechargeMode extends AppCompatActivity {
                 }
                 mEditTextAddSolde.setError(null);
 
-                Toast.makeText(getApplicationContext(),"all is good", Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(),"all is good", Toast.LENGTH_LONG).show();
                 showProgress(true);
                 final Bracelet b = new Bracelet();
                 b.manualRechargeBracelet(mScanBraceletCode, Double.parseDouble(mEditTextAddSolde.getText().toString()), mUser.getToken()).setManualRechargeCompleteListener(new Bracelet.BraceletScanManualRechargeCompleteListener() {
@@ -111,6 +113,9 @@ public class Admin_RechargeMode extends AppCompatActivity {
                                 public void BraceletScanComplete(boolean success, String text, Double solde, Integer id) {
                                     if (success) {
                                         setSolde(solde);
+                                        enableAdd(false);
+                                        final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                                     } else {
                                         setSolde(0.0);
                                         Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();

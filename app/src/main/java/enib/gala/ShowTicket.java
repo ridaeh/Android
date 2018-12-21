@@ -39,7 +39,7 @@ public class ShowTicket extends AppCompatActivity {
     private TextView mTextViewEmail;
     private TextView mTextViewBalance;
 
-
+    private Bitmap mBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +84,9 @@ public class ShowTicket extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Download", Snackbar.LENGTH_LONG).show();
+                Log.i("download", "onClick");
+                Snackbar.make(view, "Not Implemented", Snackbar.LENGTH_LONG).show();
+
             }
         });
         mProgressView = findViewById(R.id.loading_progress);
@@ -120,7 +122,10 @@ public class ShowTicket extends AppCompatActivity {
                         mTextViewEmail.setText(u.getEmail());
                         String text2 = u.getBalance().toString() + "€";
                         mTextViewBalance.setText(text2);
-                        final String text = u.toString();
+                        final String text = u.getQrCode();
+                        if (text == null || text.isEmpty()) {
+                            finish();
+                        }
                         new Thread(new Runnable() {
                             public void run() {
                                 // a potentially time consuming task
@@ -189,13 +194,13 @@ public class ShowTicket extends AppCompatActivity {
             BitMatrix bitMatrix = writer.encode(text, BarcodeFormat.QR_CODE, 512, 512);
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();
-            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
-                    bitmap.setPixel(x, y, bitMatrix.get(x, y) ? getResources().getColor(R.color.QRCodeBlackColor) : getResources().getColor(R.color.QRCodeWhiteColor));
+                    mBitmap.setPixel(x, y, bitMatrix.get(x, y) ? getResources().getColor(R.color.QRCodeBlackColor) : getResources().getColor(R.color.QRCodeWhiteColor));
                 }
             }
-            return bitmap;
+            return mBitmap;
 
 
         } catch (WriterException e) {

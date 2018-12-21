@@ -1,5 +1,6 @@
 package enib.gala;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -89,10 +90,10 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         mImageButtonGoToTicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent i =  new Intent();
-//                i.setClass(getApplicationContext(), ShowTicket.class);
-//                ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(getApplicationContext(),0,0);
-//                startActivityForResult(i,request_code_store, activityOptions.toBundle());
+                Intent i = new Intent();
+                i.setClass(getApplicationContext(), ShowTicket.class);
+                ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(getApplicationContext(), 0, 0);
+                startActivityForResult(i, request_code_store, activityOptions.toBundle());
             }
         });
 
@@ -126,7 +127,7 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
 
     @Override
     public void onRefresh() {
-        Toast.makeText(this, "Refresh", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Refresh", Toast.LENGTH_SHORT).show();
         mAuth.getAllInfo(mAuth.getCurrentUser()).getAllInfoListener(new UserAuth.GetAllInfoListener() {
             @Override
             public void GetAllInfoComplete(User u) {
@@ -194,9 +195,21 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         {
             mEditTextAccountBalanceValue.setText("0.0€");
         }
-        boolean isTicket = false; //TODO get ticket
-        mCardViewNoTicket.setVisibility(isTicket ? View.GONE : View.VISIBLE);
-        mCardViewTicket.setVisibility(!isTicket ? View.GONE : View.VISIBLE);
+        try {
+            String text = mUser.getQrCode();
+            boolean isTicket = (text != null || !text.isEmpty());
+
+            mCardViewNoTicket.setVisibility(isTicket ? View.GONE : View.VISIBLE);
+            mCardViewTicket.setVisibility(!isTicket ? View.GONE : View.VISIBLE);
+            if (isTicket) {
+                TextView mTextViewTicketEventName = findViewById(R.id.textViewTicketEventName);
+                mTextViewTicketEventName.setText("Nuit de l'ENIB"); //TODO
+                TextView mTextViewEventDescription = findViewById(R.id.textViewEventDescription);
+                mTextViewEventDescription.setText("Gala de l'École nationale d'ingénieurs de Brest");//TODO
+            }
+        } catch (Exception e) {
+            Log.e("updateView set visible? admin button", e.toString());
+        }
 
         try
         {
