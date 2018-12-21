@@ -14,9 +14,11 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class Bracelet {
     private BraceletScanCompleteListener listenerBraceletScan;
+    private BraceletScanManualRechargeCompleteListener listenerBraceletScanManualRecharge;
 
     public Bracelet() {
         this.listenerBraceletScan = null;
+        this.listenerBraceletScanManualRecharge = null;
     }
 
     public interface BraceletScanCompleteListener {
@@ -31,6 +33,115 @@ public class Bracelet {
     {
         new BraceletPost().execute(code);
         return this;
+    }
+
+    public void setManualRechargeCompleteListener(BraceletScanManualRechargeCompleteListener listener) {
+        this.listenerBraceletScanManualRecharge = listener;
+    }
+
+    public Bracelet manualRechargeBracelet(String code, Double amout, String adminToken) {
+        RechargeBraceletPost r = new RechargeBraceletPost();
+        r.setAdminToken(adminToken);
+        r.setAmout(amout);
+        r.setCode(code);
+        r.execute();
+        return this;
+    }
+
+    public interface BraceletScanManualRechargeCompleteListener {
+        void BraceletScanManualRechargeComplete(boolean success, String text);
+    }
+
+    public class RechargeBraceletPost extends AsyncTask<String, Void, String> {
+        private Double amout;
+        private String code;
+        private String adminToken;
+
+        public void setAmout(Double amout) {
+            this.amout = amout;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+
+        public void setAdminToken(String adminToken) {
+            this.adminToken = adminToken;
+        }
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        protected String doInBackground(String... args) {
+
+            try {
+                URL url = new URL(Data.getApiUrl()); // here is your URL path
+                HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+                con.setReadTimeout(7000);
+                con.setConnectTimeout(7000);
+                con.setDoOutput(true);
+                con.setDoInput(true);
+                con.setInstanceFollowRedirects(false);
+                con.setRequestMethod("POST");
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.accumulate("amount", amout * 100);
+
+                jsonObject.accumulate("token", adminToken);
+                jsonObject.accumulate("bracelet", code);
+
+                JSONObject jsonObject2 = new JSONObject();
+                jsonObject2.accumulate("manualRecharge", jsonObject);
+
+                JSONObject jsonObject3 = new JSONObject();
+                jsonObject3.accumulate("bracelet", jsonObject2);
+                String param = jsonObject3.toString();
+                Log.i("RechargeBraceletPost param", param);
+
+                PrintWriter out = new PrintWriter(con.getOutputStream());
+                out.print("stringified=");
+                out.print(param);
+                out.close();
+
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line).append("\n");
+                    }
+                    bufferedReader.close();
+                    return stringBuilder.toString();
+                } finally {
+                    con.disconnect();
+                }
+            } catch (Exception e) {
+                Log.e("ERROR", e.getMessage(), e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.i("ConnectionPost result", result);
+            try {
+                JSONObject obj = new JSONObject(result);
+
+                if ((boolean) obj.get("success")) {
+                    listenerBraceletScanManualRecharge.BraceletScanManualRechargeComplete(true, "success");
+                } else {
+                    listenerBraceletScanManualRecharge.BraceletScanManualRechargeComplete(false, (String) obj.get("text"));
+                }
+
+                Log.d("My App", obj.toString());
+
+            } catch (Throwable t) {
+                listenerBraceletScanManualRecharge.BraceletScanManualRechargeComplete(false, "result error");
+                Log.e("RechargeBraceletPost", "Could not parse malformed JSON: \"" + result + "\"", t);
+
+            }
+        }
     }
 
     public class BraceletPost extends AsyncTask<String, Void, String> {

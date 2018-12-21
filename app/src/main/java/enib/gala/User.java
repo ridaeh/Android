@@ -15,33 +15,9 @@ public class User {
     private String token;
     private String admin;
     private Integer permissions;
+    private String qrCode;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", phoneIndicative='" + phoneIndicative + '\'' +
-                ", city='" + city + '\'' +
-                ", postCode=" + postCode +
-                ", balance=" + balance +
-                ", token='" + token + '\'' +
-                ", admin='" + admin + '\'' +
-                ", permissions=" + permissions +
-                '}';
-    }
-
-    public User(Integer id, String email, String password, String token) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.token = token;
-    }
-
-    public User(Integer id, String firstName, String lastName, String email, String phone, String phoneIndicative, String city, String postCode, String address, String password, Double balance, String token, String admin, Integer permissions) {
+    public User(Integer id, String firstName, String lastName, String email, String phone, String phoneIndicative, String city, String postCode, String address, String password, Double balance, String token, String admin, Integer permissions, String qrCode) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -56,6 +32,42 @@ public class User {
         this.token = token;
         this.admin = admin;
         this.permissions = permissions;
+        this.qrCode = qrCode;
+    }
+
+    public User(Integer id, String email, String password, String token) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.token = token;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", phoneIndicative='" + phoneIndicative + '\'' +
+                ", city='" + city + '\'' +
+                ", postCode='" + postCode + '\'' +
+                ", address='" + address + '\'' +
+                ", balance=" + balance +
+                ", token='" + token + '\'' +
+                ", admin='" + admin + '\'' +
+                ", permissions=" + permissions +
+                ", qrCode='" + qrCode + '\'' +
+                '}';
+    }
+
+    public String getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
     }
 
     public boolean connect()

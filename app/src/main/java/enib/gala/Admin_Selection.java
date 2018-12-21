@@ -1,14 +1,14 @@
 package enib.gala;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.r0adkll.slidr.Slidr;
 
 public class Admin_Selection extends AppCompatActivity {
@@ -23,6 +23,25 @@ public class Admin_Selection extends AppCompatActivity {
 
         mAuth = new UserAuth(getApplicationContext());
         Slidr.attach(this);
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        adb.setCancelable(false);
+        adb.setTitle("Admin");
+        adb.setMessage("You enter an administrator space, please leave if you are not");
+
+        adb.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        adb.setNegativeButton("Leave", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+
+        adb.show();
     }
 
     @Override
@@ -40,8 +59,7 @@ public class Admin_Selection extends AppCompatActivity {
                     {
                         Log.i("getAllInfo getAllInfoListener return", u.toString());
                         mUser=u;
-                        if (!u.isAdmin())
-                        {
+                        if (!u.isAdmin()) {
                             finish();
                         }
                     }

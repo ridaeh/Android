@@ -26,7 +26,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -207,14 +206,16 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 public void SignInComplete(boolean success) {
                     if(success)
                     {
-                        Toast.makeText(getApplicationContext(),"success", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getApplicationContext(),"success", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(getApplicationContext(), Main.class);
                         startActivity(intent);
 
                     }
                     else
                     {
-                        Toast.makeText(getApplicationContext(),"error", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getApplicationContext(),"error", Toast.LENGTH_LONG).show();
+                        mPasswordView.setError("authentication problem");
+                        mEmailView.setError("authentication problem");
                         showProgress(false);
                     }
                 }

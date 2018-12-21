@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -15,6 +16,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -36,7 +38,6 @@ public class Admin_RechargeMode extends AppCompatActivity {
     private TextView mTextViewRechargeInfo;
     private TextView mTextViewSolde;
     private TextView mEditTextAddSolde;
-    private ImageButton mImageButtonAdd;
 
     private RadioGroup mRadioGroupPayment;
 
@@ -50,6 +51,7 @@ public class Admin_RechargeMode extends AppCompatActivity {
     private User mUser;
 
     private Integer mScanBraceletUserId;
+    private String mScanBraceletCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,12 +69,14 @@ public class Admin_RechargeMode extends AppCompatActivity {
         mTextViewRechargeInfo=findViewById(R.id.textViewRechargeInfo);
         mTextViewSolde=findViewById(R.id.editTextSolde);
         mTextViewSolde.setKeyListener(null);
-        mImageButtonAdd=findViewById(R.id.imageButtonAdd);
+
         mEditTextAddSolde=findViewById(R.id.editTextAddSolde);
 
         //radio button
         mRadioGroupPayment=findViewById(R.id.radioGroupPayment);
 
+        ImageButton mImageButtonAdd;
+        mImageButtonAdd = findViewById(R.id.imageButtonAdd);
         mImageButtonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,16 +101,37 @@ public class Admin_RechargeMode extends AppCompatActivity {
                 }
                 mEditTextAddSolde.setError(null);
 
-                Toast.makeText(getApplicationContext(),"all is good", Toast.LENGTH_LONG).show();
-
+//                Toast.makeText(getApplicationContext(),"all is good", Toast.LENGTH_LONG).show();
                 showProgress(true);
-                //TODO
-                boolean success =true;
-                if(success)
-                {
-                    //TODO maj account balance
-                    setSolde(21.23);
-                }
+                final Bracelet b = new Bracelet();
+                b.manualRechargeBracelet(mScanBraceletCode, Double.parseDouble(mEditTextAddSolde.getText().toString()), mUser.getToken()).setManualRechargeCompleteListener(new Bracelet.BraceletScanManualRechargeCompleteListener() {
+                    @Override
+                    public void BraceletScanManualRechargeComplete(boolean success, String text) {
+                        if (success) {
+                            b.scanBracelet(mScanBraceletCode).setSignInCompleteListener(new Bracelet.BraceletScanCompleteListener() {
+                                @Override
+                                public void BraceletScanComplete(boolean success, String text, Double solde, Integer id) {
+                                    if (success) {
+                                        setSolde(solde);
+                                        enableAdd(false);
+                                        final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                    } else {
+                                        setSolde(0.0);
+                                        Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
+                                        //TODO : error
+                                    }
+                                }
+                            });
+                        } else {
+                            setSolde(0.0);
+                            //TODO : error
+                        }
+
+                        showProgress(false);
+                    }
+                });
+
 
 
             }
@@ -207,6 +232,7 @@ public class Admin_RechargeMode extends AppCompatActivity {
                 {
                     String text=data.getData().toString();
                     afterBraceletCodeReturn(text);
+                    mScanBraceletCode = text;
                 }
                 catch (NullPointerException e)
                 {

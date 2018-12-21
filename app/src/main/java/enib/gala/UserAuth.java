@@ -202,7 +202,7 @@ public class UserAuth {
                     }
                     try
                     {
-                        listenerGetAllInfo.GetAllInfoComplete(new User(mId,(String) obj.get("Firstname"),(String) obj.get("Lastname"),(String) obj.get("Email"),(String) obj.get("Phone"),(String) obj.get("PhoneIndicative"),(String) obj.get("City"),(String) obj.get("Postcode"),(String) obj.get("Address"),mPassword,balance,mToken,sAdmin,null));
+                        listenerGetAllInfo.GetAllInfoComplete(new User(mId, (String) obj.get("Firstname"), (String) obj.get("Lastname"), (String) obj.get("Email"), (String) obj.get("Phone"), (String) obj.get("PhoneIndicative"), (String) obj.get("City"), (String) obj.get("Postcode"), (String) obj.get("Address"), mPassword, balance, mToken, sAdmin, null, (String) obj.get("QRCode")));
                     }
                     catch (Exception e)
                     {

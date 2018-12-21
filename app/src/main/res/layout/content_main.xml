@@ -8,30 +8,48 @@
     tools:context=".Main"
     tools:showIn="@layout/app_bar_main">
 
-    <ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/vf"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <include
-            android:id="@+id/home"
-            layout="@layout/content_main_home" />
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/history"
-            layout="@layout/content_main_history" />
+            <ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/vf"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <include
-            android:id="@+id/reload"
-            layout="@layout/content_main_reload" />
-        <include
-            android:id="@+id/ticket"
-            layout="@layout/content_main_ticket" />
+                <include
+                    android:id="@+id/home"
+                    layout="@layout/content_main_home" />
+
+                <include
+                    android:id="@+id/history"
+                    layout="@layout/content_main_history" />
+
+                <include
+                    android:id="@+id/reload"
+                    layout="@layout/content_main_reload" />
+
+                <include
+                    android:id="@+id/ticket"
+                    layout="@layout/content_main_ticket" />
 
 
-    </ViewFlipper>
+            </ViewFlipper>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.constraint.ConstraintLayout>
