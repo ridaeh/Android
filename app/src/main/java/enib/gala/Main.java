@@ -1,7 +1,12 @@
 package enib.gala;
 
+import android.annotation.TargetApi;
 import android.app.ActivityOptions;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -29,7 +34,6 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
     private EditText mEditTextAccountBalanceValue;
     private CardView mCardViewNoTicket;
     private CardView mCardViewTicket;
-    private CardView mCardViewAccountBalance;
     private MenuItem mMenuViewActionAdmin;
 
     static private int request_code_store=12;
@@ -117,12 +121,14 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         mCardViewNoTicket.setVisibility(View.GONE);
         mCardViewTicket.setVisibility(View.GONE);
 
-        mCardViewAccountBalance=findViewById(R.id.cardViewCurrentAccountSolde);
+        CardView mCardViewAccountBalance = findViewById(R.id.cardViewCurrentAccountSolde);
 
         //swipe refresh
         mSwipeRefresh = findViewById(R.id.swipeRefresh);
         mSwipeRefresh.setOnRefreshListener(this);
 
+        Intent i = new Intent(getApplicationContext(), NotificationService.class);
+        startService(i);
     }
 
     @Override
@@ -135,6 +141,7 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
                     Log.i("getAllInfo getAllInfoListener return", u.toString());
                     mUser = u;
                     updateView();
+                    testNotify();
                     mSwipeRefresh.setRefreshing(false);
                 }
             }
@@ -312,6 +319,35 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void testNotify() {
+        NotificationManager notificationManager;
+        Notification mNotification;
+        PendingIntent mPendingIntent;
+
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        Intent intent = new Intent(this, Main.class);
+        mPendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, intent, 0);
+        Notification.Builder mBuilder = new Notification.Builder(getApplicationContext());
+
+        mBuilder.setAutoCancel(true); //delete after clicked
+        mBuilder.setContentTitle("Android App Notification");
+        mBuilder.setTicker("ticker text here");
+        mBuilder.setContentText("Notification sub title");
+        mBuilder.setSmallIcon(R.drawable.ic_logo_leeap);
+        mBuilder.setContentIntent(mPendingIntent);
+        mBuilder.setOngoing(false); // false : slide to delete
+//        mBuilder.setActions()
+        //API level 16
+//        mBuilder.setSubText("This is short description of android app notification");
+        mBuilder.setNumber(150);
+        mBuilder.build();
+        mNotification = mBuilder.getNotification();
+        notificationManager.notify(11, mNotification);
+
     }
 }
 

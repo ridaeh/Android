@@ -30,7 +30,7 @@ import java.util.List;
 
 public class Admin_RechargeMode extends AppCompatActivity {
 
-    int request_code_scan_bracelet=24; //qrcode scanner
+    private int request_code_scan_bracelet = 24; //qrcode scanner
 
     private CardView mCardViewCurrentAccountSolde;
     private CardView mCardViewAddSolde;

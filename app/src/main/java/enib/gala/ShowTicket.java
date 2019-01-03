@@ -39,8 +39,6 @@ public class ShowTicket extends AppCompatActivity {
     private TextView mTextViewEmail;
     private TextView mTextViewBalance;
 
-    private Bitmap mBitmap;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -194,7 +192,7 @@ public class ShowTicket extends AppCompatActivity {
             BitMatrix bitMatrix = writer.encode(text, BarcodeFormat.QR_CODE, 512, 512);
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();
-            mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            Bitmap mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
                     mBitmap.setPixel(x, y, bitMatrix.get(x, y) ? getResources().getColor(R.color.QRCodeBlackColor) : getResources().getColor(R.color.QRCodeWhiteColor));

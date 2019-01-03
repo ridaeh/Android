@@ -50,7 +50,6 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
 
     private TextView mTextViewBraceletCode;
     private TextView mTextViewBraceletInfo;
-    private TextView mTextViewPlaceInfo;
 
     private Button mButtonBind;
     private String mQRCodeValue = null;
@@ -64,7 +63,7 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
 
     //define a request code to know witch activity return smth
     int request_code_scan_qrcode=12; //qrcode scanner
-    int request_code_scan_bracelet=24; //qrcode scanner
+    private int request_code_scan_bracelet = 24; //qrcode scanner
 
     private UserAuth mAuth;
     private User mUser;
@@ -202,7 +201,7 @@ public class Admin_EntranceMode extends AppCompatActivity implements SwipeRefres
         mTextViewFistName=findViewById(R.id.textView_first_name_value);
         mTextViewEmail=findViewById(R.id.textView_email_value);
         mTextViewAccountValue=findViewById(R.id.textView_account_value);
-        mTextViewPlaceInfo=findViewById(R.id.textViewPlaceInfo);
+        TextView mTextViewPlaceInfo = findViewById(R.id.textViewPlaceInfo);
 
         //bracelet
         mTextViewBraceletCode=findViewById(R.id.textViewBraceletCode);

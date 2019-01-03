@@ -37,7 +37,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class Admin_BarMode extends AppCompatActivity {
 
-    final int request_code_scan_bracelet=24; //qrcode scanner
+    private final int request_code_scan_bracelet = 24; //qrcode scanner
     Toolbar toolbar;
 
     private UserAuth mAuth;
@@ -53,7 +53,6 @@ public class Admin_BarMode extends AppCompatActivity {
     private EditText mEditTextTotalValue;
     private EditText mEditTextScanPayTotalValue;
 
-    private Button mButtonScan;
     private Button mButtonPay;
 
     private Integer mScanBraceletUserId=null;
@@ -137,7 +136,7 @@ public class Admin_BarMode extends AppCompatActivity {
         mEditTextScanPayTotalValue=findViewById(R.id.editTextScanPayTotalValue);
         mEditTextScanPayTotalValue.setKeyListener(null);
 
-        mButtonScan=findViewById(R.id.buttonScan);
+        Button mButtonScan = findViewById(R.id.buttonScan);
         mButtonScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

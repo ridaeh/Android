@@ -2,13 +2,10 @@ package enib.gala;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.media.Image;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.List;
@@ -17,10 +14,9 @@ public class CustomProductListAdapter  extends BaseAdapter {
 
     private List<Product> listData;
     private LayoutInflater layoutInflater;
-    private Context context;
 
     public CustomProductListAdapter(Context aContext,  List<Product> listData) {
-        this.context = aContext;
+        Context context = aContext;
         this.listData = listData;
         layoutInflater = LayoutInflater.from(aContext);
     }

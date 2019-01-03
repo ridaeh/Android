@@ -14,10 +14,9 @@ public class CustomConsumptionListAdapter  extends BaseAdapter {
 
     private List<Consumption> listData;
     private LayoutInflater layoutInflater;
-    private Context context;
 
     public CustomConsumptionListAdapter(Context aContext,  List<Consumption> listData) {
-        this.context = aContext;
+        Context context = aContext;
         this.listData = listData;
         layoutInflater = LayoutInflater.from(aContext);
     }

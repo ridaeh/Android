@@ -27,17 +27,16 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.ACCOUNT_MANAGER"
-        tools:ignore="ProtectedPermissions" />
 
     <application
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <service android:name=".NotificationService" />
+
         <activity
             android:name=".Login"
             android:label="@string/app_name">
@@ -59,20 +58,25 @@
         </activity>
         <activity
             android:name=".Main"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Settings"
+            android:launchMode="singleInstance"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Admin_Selection"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
             android:name=".ShowTicket"
+            android:launchMode="singleInstance"
             android:label="@string/title_activity_show_ticket"
             android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
             android:name=".Admin_EntranceMode"
+            android:launchMode="singleInstance"
             android:label="@string/title_activity_admin__entrance_mode"
             android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
