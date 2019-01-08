@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="enib.gala">
+    package="cash.leeap">
 
     <meta-data
         android:name="com.google.android.gms.vision.DEPENDENCIES"
@@ -35,10 +35,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <service android:name=".NotificationService" />
+        <service
+            android:name="cash.leeap.NotificationService"
+            android:enabled="true" />
 
         <activity
-            android:name=".Login"
+            android:name="cash.leeap.Login"
             android:label="@string/app_name">
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
@@ -47,40 +49,40 @@
             <!--</intent-filter>-->
         </activity>
         <activity
-            android:name=".CreateAccount"
-            android:parentActivityName=".Login"
+            android:name="cash.leeap.CreateAccount"
+            android:parentActivityName="cash.leeap.Login"
             android:theme="@style/AppTheme.SlidrActivityTheme">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Login" />
+                android:value="cash.leeap.Login" />
         </activity>
         <activity
-            android:name=".Main"
+            android:name="cash.leeap.Main"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Settings"
+            android:name="cash.leeap.Settings"
             android:launchMode="singleInstance"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".Admin_Selection"
+            android:name="cash.leeap.Admin_Selection"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
-            android:name=".ShowTicket"
+            android:name="cash.leeap.ShowTicket"
             android:launchMode="singleInstance"
             android:label="@string/title_activity_show_ticket"
             android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
-            android:name=".Admin_EntranceMode"
+            android:name="cash.leeap.Admin_EntranceMode"
             android:launchMode="singleInstance"
             android:label="@string/title_activity_admin__entrance_mode"
             android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
-            android:name=".ScannedBarcodeActivity"
+            android:name="cash.leeap.ScannedBarcodeActivity"
             android:label="@string/title_activity_scanned_barcode"
             android:theme="@style/AppTheme.SlidrActivityTheme" />
 
@@ -95,7 +97,7 @@
         </provider>
 
         <activity
-            android:name=".ScanBraceletActivity"
+            android:name="cash.leeap.ScanBraceletActivity"
             android:label="@string/title_activity_scanned_bracelet"
             android:theme="@style/AppTheme.SlidrActivityTheme"
             android:windowActivityTransitions="true">
@@ -110,22 +112,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Admin_RechargeMode"
+            android:name="cash.leeap.Admin_RechargeMode"
             android:label="@string/title_activity_admin__recharge_mode"
             android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
-            android:name=".Store"
+            android:name="cash.leeap.Store"
             android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
-            android:name=".ShowHistory"
+            android:name="cash.leeap.ShowHistory"
             android:theme="@style/AppTheme.SlidrActivityTheme" />
         <activity
-            android:name=".Admin_BarMode"
+            android:name="cash.leeap.Admin_BarMode"
             android:label="@string/title_activity_admin__bar_mode"
             android:theme="@style/AppTheme.SlidrActivityTheme">
         </activity>
         <activity
-            android:name=".Splash"
+            android:name="cash.leeap.Splash"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
