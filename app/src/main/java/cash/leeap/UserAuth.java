@@ -284,35 +284,31 @@ public class UserAuth {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.i("ConnectionPost result",result);
-            try {
 
+            try {
+                Log.i("ConnectionPost result", result);
                 JSONObject obj = new JSONObject(result);
 
-                if((boolean) obj.get("success"))
-                {
+                if ((boolean) obj.get("success")) {
 
-                    String token= (String) obj.get("token");
-                    Integer id =Integer.parseInt((String) obj.get("id"));
+                    String token = (String) obj.get("token");
+                    Integer id = Integer.parseInt((String) obj.get("id"));
                     MyDBHandler db = new MyDBHandler(mContext, null, null, 1);
                     db.emptyTable();
 
-                    User u =new User(id,mEmail,mPassword,token);
+                    User u = new User(id, mEmail, mPassword, token);
                     db.addHandler(u);
                     db.close();
                     listenerSignIn.SignInComplete(true);
-                }
-                else
-                {
+                } else {
                     //TODO
                     listenerSignIn.SignInComplete(false);
                 }
 
                 Log.d("My App", obj.toString());
 
-            } catch (Throwable t) {
-                Log.e("My App", "Could not parse malformed JSON: \"" + result + "\"");
-                listenerSignIn.SignInComplete(false);
+            } catch (Exception e) {
+                Log.e("ERROR", e.getMessage(), e);
             }
         }
     }

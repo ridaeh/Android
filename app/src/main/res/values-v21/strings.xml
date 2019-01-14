@@ -31,4 +31,5 @@
     <string name="text_add">Add</string>
     <string name="contentDescription_add_to_account">add to account</string>
     <string name="text_bracelet_code">Bracelet Code</string>
+    <string name="text_balance">Balance</string>
 </resources>

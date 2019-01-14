@@ -241,4 +241,8 @@
     <string name="text_add">Add</string>
     <string name="contentDescription_add_to_account">add to account</string>
     <string name="text_bracelet_code">Bracelet Code</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="text_balance">Balance</string>
+    <string name="disconnected">disconnected</string>
 </resources>
