@@ -2,11 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="cash.leeap">
-
-    <meta-data
-        android:name="com.google.android.gms.vision.DEPENDENCIES"
-        android:value="barcode" />
-
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -35,6 +30,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <activity android:name=".Payment"></activity>
+
+        <meta-data
+            android:name="com.google.android.gms.wallet.api.enabled"
+            android:value="true" />
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode" />
+
         <service
             android:name=".NotificationService"
             android:enabled="true" />
@@ -132,14 +136,10 @@
         <activity
             android:name=".Admin_BarMode"
             android:label="@string/title_activity_admin__bar_mode"
-            android:theme="@style/AppTheme.SlidrActivityTheme">
-
-        </activity>
+            android:theme="@style/AppTheme.SlidrActivityTheme"></activity>
         <activity
             android:name=".Splash"
-            android:theme="@style/SplashTheme">
-
-        </activity>
+            android:theme="@style/SplashTheme"></activity>
 
         <receiver android:name=".BalanceWidget">
             <intent-filter>
@@ -150,6 +150,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/balance_widget_info" />
         </receiver>
+
+        <activity
+            android:name=".Reload"
+            android:label="@string/title_activity_reload"
+            android:theme="@style/AppTheme.SlidrActivityTheme"></activity>
     </application>
 
 </manifest>

@@ -27,7 +27,7 @@ public class NotificationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // The service is starting, due to a call to startService()
-        simpleNotify("Start Notification Center", null, null);
+//        simpleNotify("Start Notification Center", null, null);
         Log.i(TAG, "onStartCommand");
         return mStartMode;
     }
@@ -73,7 +73,7 @@ public class NotificationService extends Service {
         mBuilder.setAutoCancel(true); //delete after clicked
         mBuilder.setContentTitle(title);
         mBuilder.setContentText(content);
-        mBuilder.setSmallIcon(R.drawable.ic_logo_leeap);
+        mBuilder.setSmallIcon(R.drawable.ic_notification);
         mBuilder.setContentIntent(mPendingIntent);
         mBuilder.setOngoing(false); // false : slide to delete
 //        mBuilder.setActions()

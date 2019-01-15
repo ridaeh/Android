@@ -6,6 +6,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -306,11 +307,18 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
             Intent intent = new Intent(getApplicationContext(), Store.class);
             startActivity(intent); //TODO : on activity return update
 
-        } else if (id == R.id.nav_reload) { //disabled
+        } else if (id == R.id.nav_reload) {
+            Intent intent = new Intent(getApplicationContext(), Reload.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_share) { //disabled
 
-        } else if (id == R.id.nav_send_feedback) { //disabled
+        } else if (id == R.id.nav_send_feedback) {
+            String url = "https://leeap.cash/feedback";
+
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
 
         }
 
