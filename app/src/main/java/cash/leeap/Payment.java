@@ -74,26 +74,45 @@ public class Payment extends AppCompatActivity {
             case LOAD_PAYMENT_DATA_REQUEST_CODE:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
-                        PaymentData paymentData = PaymentData.getFromIntent(data);
-                        // You can get some data on the user's card, such as the brand and last 4 digits
-                        CardInfo info = paymentData.getCardInfo();
-                        // You can also pull the user address from the PaymentData object.
-                        UserAddress address = paymentData.getShippingAddress();
-                        // This is the raw JSON string version of your Stripe token.
-                        String rawToken = paymentData.getPaymentMethodToken().getToken();
+                        Log.i(TAG, "onActivityResult: PAYMENT_DATA_REQUEST_CODE RESULT_OK");
+                        try {
+                            PaymentData paymentData = PaymentData.getFromIntent(data);
+                            // You can get some data on the user's card, such as the brand and last 4 digits
+                            CardInfo info = paymentData.getCardInfo();
+                            UserAddress billingAddress = info.getBillingAddress();
+//                            String name =billingAddress.getName();
+//                            Log.i(TAG, "name : "+name);
+                            // You can also pull the user address from the PaymentData object.
+                            UserAddress address = paymentData.getShippingAddress();
+                            Log.i(TAG, "address : " + address);
+                            // This is the raw JSON string version of your Stripe token.
+                            String rawToken = paymentData.getPaymentMethodToken().getToken();
 
-                        // Now that you have a Stripe token object, charge that by using the id
-                        Token stripeToken = Token.fromString(rawToken);
-                        if (stripeToken != null) {
-                            // This chargeToken function is a call to your own server, which should then connect
-                            // to Stripe's API to finish the charge.
+                            // Now that you have a Stripe token object, charge that by using the id
+                            Token stripeToken = Token.fromString(rawToken);
+                            if (stripeToken != null) {
+                                // This chargeToken function is a call to your own server, which should then connect
+                                // to Stripe's API to finish the charge.
 //                            chargeToken(stripeToken.getId());
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "onActivityResult: ", e);
                         }
+
+
                         break;
                     case Activity.RESULT_CANCELED:
+                        Log.i(TAG, "onActivityResult: PAYMENT_DATA_REQUEST_CODE RESULT_CANCELED");
                         break;
                     case AutoResolveHelper.RESULT_ERROR:
                         Status status = AutoResolveHelper.getStatusFromIntent(data);
+
+                        try {
+
+                            Log.i(TAG, "onActivityResult: result error" + status.getStatusMessage());
+                        } catch (Exception e) {
+                            Log.e(TAG, "onActivityResult: ", e);
+                        }
                         // Log the status for debugging
                         // Generally there is no need to show an error to
                         // the user as the Google Payment API will do that
@@ -188,7 +207,7 @@ public class Payment extends AppCompatActivity {
                                 TransactionInfo.newBuilder()
                                         .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
                                         .setTotalPrice("10.00")//TODO change using value
-                                        .setCurrencyCode("USD")//TODO change to EUR
+                                        .setCurrencyCode("EUR")//TODO change to EUR
                                         .build())
                         .addAllowedPaymentMethod(WalletConstants.PAYMENT_METHOD_CARD)
                         .addAllowedPaymentMethod(WalletConstants.PAYMENT_METHOD_TOKENIZED_CARD)
