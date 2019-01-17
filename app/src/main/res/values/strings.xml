@@ -232,4 +232,5 @@
     <string name="info_account_balance">Account Balance</string>
     <string name="text_total">Total</string>
     <string name="button_pay">Pay</string>
+    <string name="register_message">Don’\ t have an account with us ? &lt;font color="#0000fff"&gt;Signup&lt;/font&gt;</string>
 </resources>
