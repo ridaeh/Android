@@ -59,7 +59,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         mProgressView = findViewById(R.id.login_progress);
         mRegisterButton =findViewById(R.id.buttonRegister);
         mPasswordView = findViewById(R.id.password);
-        mSignInButton = findViewById(R.id.sign_in_button);
+        mSignInButton = findViewById(R.id.email_sign_in_button);
 
         populateAutoComplete();
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
