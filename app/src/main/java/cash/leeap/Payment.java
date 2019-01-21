@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.ApiException;
@@ -25,16 +28,24 @@ import com.google.android.gms.wallet.PaymentsClient;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.Wallet;
 import com.google.android.gms.wallet.WalletConstants;
+import com.stripe.android.model.Card;
 import com.stripe.android.model.Token;
+import com.stripe.android.view.CardMultilineWidget;
 
 import java.util.Arrays;
+
+import static cash.leeap.Data.ENABLE_GOOGLE_PAY;
+import static cash.leeap.Data.PUBLISHABLE_KEY;
 
 public class Payment extends AppCompatActivity {
     private static final int LOAD_PAYMENT_DATA_REQUEST_CODE = 12;
     final String TAG = "Payment";
     PaymentsClient paymentsClient;
     Button mButton_GooglePay;
-    Integer value;
+    Button mButton_pay_card;
+    CardMultilineWidget mCard_multiline_widget;
+    EditText mEditText_name;
+    Double value;
     Activity a;
 
     @Override
@@ -43,8 +54,9 @@ public class Payment extends AppCompatActivity {
         setContentView(R.layout.activity_payment);
 
         String valueString = getIntent().getStringExtra("VALUE");
-        value = Integer.parseInt(valueString);
+        value = Double.parseDouble(valueString);
 
+        a = this;
 
         paymentsClient =
                 Wallet.getPaymentsClient(this,
@@ -56,9 +68,49 @@ public class Payment extends AppCompatActivity {
         mTextView_valueToPay.setText(valueString);
 
         mButton_GooglePay = findViewById(R.id.button_GooglePay);
+        mButton_GooglePay.setEnabled(false);
+        mButton_GooglePay.setVisibility(ENABLE_GOOGLE_PAY ? View.VISIBLE : View.GONE);
 
-        a = this;
+        mCard_multiline_widget = findViewById(R.id.card_multiline_widget);
+        mEditText_name = findViewById(R.id.editText_name);
+        mEditText_name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (mEditText_name.getText().toString().isEmpty()) {
+                    mEditText_name.setError(getString(R.string.prompt_enter_name));
+                }
+            }
+        });
+
+        mButton_pay_card = findViewById(R.id.button_pay_card);
+        mButton_pay_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mEditText_name.getText().toString().isEmpty()) {
+                    mEditText_name.setError(getString(R.string.prompt_enter_name));
+                    return;
+                }
+
+                Card cardToSave = mCard_multiline_widget.getCard();
+
+                if (cardToSave != null) {
+//                    Toast.makeText(a, "Card is not null", Toast.LENGTH_SHORT).show();
+                    String name = mEditText_name.getText().toString();
+                    cardToSave.setName(name);
+                }
+
+            }
+        });
 
     }
 
@@ -93,7 +145,7 @@ public class Payment extends AppCompatActivity {
                             if (stripeToken != null) {
                                 // This chargeToken function is a call to your own server, which should then connect
                                 // to Stripe's API to finish the charge.
-//                            chargeToken(stripeToken.getId());
+                                chargeToken(stripeToken.getId());
                             }
                         } catch (Exception e) {
                             Log.e(TAG, "onActivityResult: ", e);
@@ -127,6 +179,11 @@ public class Payment extends AppCompatActivity {
         }
     }
 
+    private void chargeToken(String token) {
+
+    }
+
+
     private void isReadyToPay() {
         IsReadyToPayRequest request = IsReadyToPayRequest.newBuilder()
                 .addAllowedPaymentMethod(WalletConstants.PAYMENT_METHOD_CARD)
@@ -147,7 +204,7 @@ public class Payment extends AppCompatActivity {
 
                             if (result) {
                                 //show Google as payment option
-                                mButton_GooglePay.setVisibility(View.VISIBLE);
+                                mButton_GooglePay.setEnabled(true);
                                 mButton_GooglePay.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -177,7 +234,7 @@ public class Payment extends AppCompatActivity {
                                 });
 
                             } else {
-                                mButton_GooglePay.setVisibility(View.GONE);
+                                mButton_GooglePay.setEnabled(false);
                                 //hide Google as payment option
                             }
                         } catch (ApiException e) {
@@ -195,7 +252,7 @@ public class Payment extends AppCompatActivity {
         return PaymentMethodTokenizationParameters.newBuilder()
                 .setPaymentMethodTokenizationType(WalletConstants.PAYMENT_METHOD_TOKENIZATION_TYPE_PAYMENT_GATEWAY)
                 .addParameter("gateway", "stripe")
-                .addParameter("stripe:publishableKey", "pk_test_N0wTdW6y5vfnpz8gwnmspmX8")
+                .addParameter("stripe:publishableKey", PUBLISHABLE_KEY)
                 .addParameter("stripe:version", "2018-11-08")
                 .build();
     }
@@ -206,8 +263,8 @@ public class Payment extends AppCompatActivity {
                         .setTransactionInfo(
                                 TransactionInfo.newBuilder()
                                         .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
-                                        .setTotalPrice("10.00")//TODO change using value
-                                        .setCurrencyCode("EUR")//TODO change to EUR
+                                        .setTotalPrice(value.toString())
+                                        .setCurrencyCode("EUR")
                                         .build())
                         .addAllowedPaymentMethod(WalletConstants.PAYMENT_METHOD_CARD)
                         .addAllowedPaymentMethod(WalletConstants.PAYMENT_METHOD_TOKENIZED_CARD)

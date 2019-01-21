@@ -174,4 +174,6 @@
     <string name="contentDescription_add">add</string>
     <string name="hint_reloadValue">enter reload value</string>
     <string name="textView_amount">amount</string>
+    <string name="prompt_name">Name</string>
+    <string name="prompt_enter_name">please enter your name</string>
 </resources>

@@ -27,6 +27,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.stripe.android.PaymentConfiguration;
+
+import static cash.leeap.Data.PUBLISHABLE_KEY;
+
 public class Main extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
     private UserAuth mAuth;
     private User mUser;
@@ -47,6 +51,8 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        PaymentConfiguration.init(PUBLISHABLE_KEY);
 
         toolbar.setTitle("");
 
@@ -168,7 +174,7 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
         }
         else
         {
-            Toast.makeText(getApplicationContext(),"no user found", Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(),"no user found", Toast.LENGTH_LONG).show();
             Log.i("getCurrentUser : ", "no user found");
             Intent intent = new Intent(getApplicationContext(), Login.class);
             startActivity(intent);
