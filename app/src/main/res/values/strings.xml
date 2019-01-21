@@ -175,4 +175,6 @@
     <string name="hint_reloadValue">enter reload value</string>
     <string name="textView_amount">amount</string>
     <string name="register_message">Don’\ t have an account with us ? &lt;font color="#0000fff"&gt;Signup&lt;/font&gt;</string>
+    <string name="prompt_name">Name</string>
+    <string name="prompt_enter_name">please enter your name</string>
 </resources>
