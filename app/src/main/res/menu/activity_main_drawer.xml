@@ -9,7 +9,6 @@
         <menu>
             <item
                 android:id="@+id/nav_store"
-                android:enabled="false"
                 android:icon="@drawable/ic_shopping_cart_grey_24dp"
                 android:title="@string/nav_store_name" />
             <item
@@ -22,7 +21,6 @@
                 android:title="@string/nav_history_name" />
             <item
                 android:id="@+id/nav_reload"
-                android:enabled="false"
                 android:icon="@drawable/ic_sync_black_24dp"
                 android:title="@string/nav_reload_name" />
         </menu>
@@ -39,7 +37,6 @@
                 android:title="@string/nav_share_name" />
             <item
                 android:id="@+id/nav_send_feedback"
-                android:enabled="false"
                 android:icon="@drawable/ic_menu_send"
                 android:title="@string/nav_send_feedback_name" />
         </menu>
